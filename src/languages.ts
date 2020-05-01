@@ -112,9 +112,6 @@ const langs = {
   yo: "Yoruba",
   zu: "Zulu",
 };
-interface Window {
-  [key: string]: any; // Add index signature
-}
 
 /**
  * Returns the ISO 639-1 code of the desiredLang – if it is supported by Google Translate

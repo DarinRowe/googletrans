@@ -10,42 +10,17 @@ interface Options {
   client?: string;
 }
 
-translate("I spea Dutch", { from: "en", to: "zh-CN" })
-  .then((res) => {
-    console.log(res);
-    console.log(res.text);
-    //=> Ik spea Nederlands!
-    console.log(res.from.text.autoCorrected);
-    // 是否已经修正
-    // if the API has auto corrected the text
-    //=> true
-    console.log(res.from.text.value);
-    // 修正后的文本
-    // The auto corrected text or the text with suggested corrections
-    //=> I [speak] Dutch!
-    console.log(res.from.text.didYouMean);
-    // if the API has suggested corrections to the text
-    //=> false
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
 /**
  *
  * @param {string} text - The text to be translated
  * @param {Object} opts - Options
  * @return {Promise} - Axios Promise
  */
-function translate(text: string, opts: Options) {
+function translate(text: string, opts?: Options) {
   opts = opts || {};
   let e: Error;
   const FROMTO = [opts["from"], opts["to"]];
   FROMTO.forEach((lang) => {
-    if (typeof lang !== "undefined") {
-      console.log(isSupported(lang));
-    }
-
     if (lang && !isSupported(lang)) {
       e = new Error(`The language 「${lang}」is not suppored!`);
       return new Promise((resolve, reject) => {
@@ -99,14 +74,18 @@ function translate(text: string, opts: Options) {
         pronunciation: "",
         from: {
           language: {
-            didYouMean: false,
-            iso: "",
+            //language
+            hasCorrectedLang: false, // correct source language
+            iso: "", // source language
           },
-          text: {
-            autoCorrected: false,
-            value: "",
-            didYouMean: false,
+          correct: {
+            // correct source translate text
+            hasCorrectedText: false, // correct source text
+            value: "", // correct value
           },
+        },
+        to: {
+          translations: [], // multiple translations
         },
         raw: "",
       };
@@ -125,35 +104,34 @@ function translate(text: string, opts: Options) {
       if (body[2] === body[8][0][0]) {
         result.from.language.iso = body[2];
       } else {
-        result.from.language.didYouMean = true;
+        result.from.language.hasCorrectedLang = true;
         result.from.language.iso = body[8][0][0];
       }
 
+      if (body[1][0][2]) result.to.translations = body[1][0][2];
+
       if (body[7] && body[7][0]) {
-        var str = body[7][0];
+        let str = body[7][0];
 
         str = str.replace(/<b><i>/g, "[");
         str = str.replace(/<\/i><\/b>/g, "]");
 
-        result.from.text.value = str;
+        result.from.correct.value = str;
 
+        let a = false;
+        let b = false;
         if (body[7][5] === true) {
-          result.from.text.autoCorrected = true;
+          a = true;
         } else {
-          result.from.text.didYouMean = true;
+          b = true;
+        }
+        if (a || b) {
+          result.from.correct.hasCorrectedText = true;
         }
       }
       return result;
     })
     .catch((error) => {
-      if (
-        typeof error.response.status !== undefined &&
-        error.response.status !== 200
-      ) {
-        error.msg = "BAD_REQUEST";
-      } else {
-        error.msg = "BAD_NETWORK";
-      }
       throw error;
     });
 }
@@ -183,3 +161,6 @@ function getRandom(n: number, m: number) {
   var num = Math.floor(Math.random() * (m - n + 1) + n);
   return num;
 }
+
+export default translate;
+export { translate, getRandom, getUserAgent };
