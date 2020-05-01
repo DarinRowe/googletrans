@@ -1,0 +1,44 @@
+{
+  "name": "googletrans",
+  "version": "0.0.3",
+  "description": "Free and Unlimited Google translate API for node.js",
+  "files": [
+    "lib/**/*"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarinRowe/googletrans.git"
+  },
+  "keywords": [
+    "google",
+    "language",
+    "i18n",
+    "localization",
+    "googletranslate",
+    "translation",
+    "translator",
+    "translate",
+    "node",
+    "promise"
+  ],
+  "author": "DarinRowe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DarinRowe/googletrans/issues"
+  },
+  "homepage": "https://github.com/DarinRowe/googletrans#readme",
+  "dependencies": {
+    "@types/qs": "^6.9.1",
+    "axios": "^0.19.2",
+    "qs": "^6.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "typescript": "^3.8.3"
+  }
+}
