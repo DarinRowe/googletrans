@@ -1,11 +1,11 @@
-import { translate, getResult } from "../googleTr";
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
+import { getToken } from "../googleToken";
+const translate = require("../googletrans");
 const resposeTest = require("./resposeTest.json");
 const resposeTest2 = require("./resposeTest2.json");
 const resposeTest3 = require("./resposeTest3.json");
 const resposeTest4 = require("./resposeTest4.json");
-import { getToken } from "../google_token";
 
 describe("translate Methods Test", () => {
   test("translate without any options", () => {
@@ -146,19 +146,19 @@ describe("getUserAgent", () => {
 
 describe("getReslut method Test", () => {
   test("getResult Test", () => {
-    const reslut = getResult(resposeTest);
+    const reslut = translate.getResult(resposeTest);
     expect(reslut.text).toBe("mais");
   });
   test("getResult Test2", () => {
-    const reslut = getResult(resposeTest2);
+    const reslut = translate.getResult(resposeTest2);
     expect(reslut.text).toBe("ich spreche Niederländisch");
   });
   test("getResult Test3", () => {
-    const reslut = getResult(resposeTest3);
+    const reslut = translate.getResult(resposeTest3);
     expect(reslut.text).toBe("vertaler");
   });
   test("getResult Test4", () => {
-    const reslut = getResult(resposeTest4);
+    const reslut = translate.getResult(resposeTest4);
     expect(reslut.text).toBe("你好");
   });
 });

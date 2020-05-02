@@ -1,7 +1,7 @@
 import axios from "axios";
 import { isSupported, getCode } from "./languages";
 import qs from "qs";
-import { getToken } from "./google_token";
+import { getToken } from "./googleToken";
 import { getUserAgent } from "./utils";
 interface Options {
   from?: string;
@@ -58,24 +58,6 @@ function translate(text: string, opts?: Options) {
     "User-Agent": getUserAgent(),
     "Accept-Encoding": "gzip",
   };
-
-  // return new Promise((resolve, reject) => {
-  //   axios({
-  //     url: URL,
-  //     params: PARAMS,
-  //     headers: HEADERS,
-  //     timeout: 3 * 1000,
-  //     paramsSerializer: (params) => {
-  //       return qs.stringify(params, { arrayFormat: "repeat" });
-  //     },
-  //   })
-  //     .then((res) => {
-  //       resolve(getResult(res));
-  //     })
-  //     .catch((err) => {
-  //       reject(err);
-  //     });
-  // });
 
   return axios({
     url: URL,
@@ -151,5 +133,9 @@ function getResult(res: any) {
   return result;
 }
 
-export default translate;
+//tr()
+module.exports = translate;
+module.exports.getResult = getResult;
+
+// tr.translate
 export { translate, getResult };

@@ -1,17 +1,18 @@
 {
   "name": "googletrans",
-  "version": "0.1.3",
+  "version": "0.1.6",
   "description": "Free and Unlimited Google translate API for node.js",
   "files": [
     "lib/**/*"
   ],
-  "main": "dist/googleTr.js",
+  "main": "lib/googletrans.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "coveralls": "coveralls < coverage/lcov.info",
     "version": "npm run build && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "postnpm": "npm publish"
   },
   "repository": {
     "type": "git",
