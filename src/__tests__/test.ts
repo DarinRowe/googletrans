@@ -1,7 +1,10 @@
 import { translate, getResult } from "../googleTr";
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
-import { responseTest } from "./resposeTest";
+const resposeTest = require("./resposeTest.json");
+const resposeTest2 = require("./resposeTest2.json");
+const resposeTest3 = require("./resposeTest3.json");
+const resposeTest4 = require("./resposeTest4.json");
 import { getToken } from "../google_token";
 
 describe("translate Methods Test", () => {
@@ -61,14 +64,14 @@ describe("translate Methods Test", () => {
     });
   });
 
-  //   test("async", async () => {
-  //     try {
-  //       const res = await translate("Hero", { to: "zh" });
-  //       expect(res.text).toBe("英雄");
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   });
+  // test("async", async () => {
+  //   try {
+  //     const res = await translate("Hero", { to: "zh" });
+  //     expect(res.text).toBe("英雄");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // });
 });
 
 describe("isSupported method Test", () => {
@@ -142,7 +145,20 @@ describe("getUserAgent", () => {
 });
 
 describe("getReslut method Test", () => {
-  test("get", () => {
-    console.log(getResult(responseTest));
+  test("getResult Test", () => {
+    const reslut = getResult(resposeTest);
+    expect(reslut.text).toBe("mais");
+  });
+  test("getResult Test2", () => {
+    const reslut = getResult(resposeTest2);
+    expect(reslut.text).toBe("ich spreche Niederländisch");
+  });
+  test("getResult Test3", () => {
+    const reslut = getResult(resposeTest3);
+    expect(reslut.text).toBe("vertaler");
+  });
+  test("getResult Test4", () => {
+    const reslut = getResult(resposeTest4);
+    expect(reslut.text).toBe("你好");
   });
 });

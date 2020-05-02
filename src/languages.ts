@@ -127,10 +127,6 @@ function getCode(desiredLang: string) {
   }
 
   const keys = Object.keys(langs).filter((key) => {
-    if (typeof langs[key] !== "string") {
-      return unSupported;
-    }
-
     return langs[key].toLowerCase() === desiredLang;
   });
 

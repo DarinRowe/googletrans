@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
-    "coverage": "jest --coverage"
+    "coveralls": "coveralls < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.4",
+    "coveralls": "^3.1.0",
     "jest": "^25.5.3",
     "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"

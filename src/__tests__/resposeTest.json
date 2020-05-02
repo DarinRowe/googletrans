@@ -1,10 +1,10 @@
-const responseTest = {
-  status: 200,
-  statusText: "OK",
-  data: [
+{
+  "status": 200,
+  "statusText": "OK",
+  "data": [
     [
       ["mais", "but", null, null, 1],
-      [null, null, null, "bət"],
+      [null, null, null, "bət"]
     ],
     [
       [
@@ -12,7 +12,7 @@ const responseTest = {
         ["mais"],
         [["mais", ["but", "although", "yet", "only"], null, 0.59712726]],
         "but",
-        7,
+        7
       ],
       [
         "preposition",
@@ -22,11 +22,11 @@ const responseTest = {
             "sauf",
             ["except", "unless", "excluding", "but", "save", "apart from"],
             null,
-            0.0019005252,
-          ],
+            0.0019005252
+          ]
         ],
         "but",
-        5,
+        5
       ],
       [
         "adverb",
@@ -36,13 +36,13 @@ const responseTest = {
             "seulement",
             ["only", "just", "merely", "solely", "but", "even"],
             null,
-            0.00058875524,
+            0.00058875524
           ],
-          ["ne ... que", ["only", "but"]],
+          ["ne ... que", ["only", "but"]]
         ],
         "but",
-        4,
-      ],
+        4
+      ]
     ],
     "en",
     null,
@@ -65,13 +65,13 @@ const responseTest = {
               "merely",
               "no more than",
               "nothing but",
-              "a mere",
+              "a mere"
             ],
-            "m_en_us1229689.010",
+            "m_en_us1229689.010"
           ],
-          [["only", "merely", "just", "simply"], ""],
+          [["only", "merely", "just", "simply"], ""]
         ],
-        "but",
+        "but"
       ],
       [
         "conjunction",
@@ -91,9 +91,9 @@ const responseTest = {
               "all the same",
               "just the same",
               "though",
-              "although",
+              "although"
             ],
-            "m_en_us1229689.001",
+            "m_en_us1229689.001"
           ],
           [
             [
@@ -103,12 +103,12 @@ const responseTest = {
               "then again",
               "on the other hand",
               "by/in contrast",
-              "on the contrary",
+              "on the contrary"
             ],
-            "m_en_us1229689.003",
-          ],
+            "m_en_us1229689.003"
+          ]
         ],
-        "but",
+        "but"
       ],
       [
         "preposition",
@@ -126,13 +126,13 @@ const responseTest = {
               "excluding",
               "leaving out",
               "save (for)",
-              "saving",
+              "saving"
             ],
-            "m_en_us1229689.008",
-          ],
+            "m_en_us1229689.008"
+          ]
         ],
-        "but",
-      ],
+        "but"
+      ]
     ],
     [
       [
@@ -141,40 +141,40 @@ const responseTest = {
           [
             "no more than; only.",
             "m_en_us1229689.010",
-            "choose from a colorful array of oranges, cherries, and raspberries, to name but a few",
-          ],
+            "choose from a colorful array of oranges, cherries, and raspberries, to name but a few"
+          ]
         ],
-        "but",
+        "but"
       ],
       [
         "conjunction",
         [
           [
             "used to introduce something contrasting with what has already been mentioned.",
-            "m_en_us1229689.001",
+            "m_en_us1229689.001"
           ],
           [
             "used to indicate the impossibility of anything other than what is being stated.",
             "m_en_us1229689.004",
-            "there was nothing they could do but swallow their pride",
+            "there was nothing they could do but swallow their pride"
           ],
           [
             "used to introduce a response expressing a feeling such as surprise or anger.",
             "m_en_us1229689.005",
-            "It is also very funny, but don't be surprised if you have to cross a protest line to see it.",
+            "It is also very funny, but don't be surprised if you have to cross a protest line to see it."
           ],
           [
             "used after an expression of apology for what one is about to say.",
             "m_en_us1229689.006",
-            "For that I can only apologise but it will be interesting to see who has missed the cut.",
+            "For that I can only apologise but it will be interesting to see who has missed the cut."
           ],
           [
             "without its being the case that.",
             "m_en_us1229689.007",
-            "It never rains but it pours.",
-          ],
+            "It never rains but it pours."
+          ]
         ],
-        "but",
+        "but"
       ],
       [
         "preposition",
@@ -182,10 +182,10 @@ const responseTest = {
           [
             "except; apart from; other than.",
             "m_en_us1229689.008",
-            "She was too shaken and frightened to do anything else but feel safe in the arms of Peter Grayson.",
-          ],
+            "She was too shaken and frightened to do anything else but feel safe in the arms of Peter Grayson."
+          ]
         ],
-        "but",
+        "but"
       ],
       [
         "noun",
@@ -193,11 +193,11 @@ const responseTest = {
           [
             "an argument against something; an objection.",
             "m_en_us1229689.011",
-            "No excuses, no ifs and buts , enforcement is what we need.",
-          ],
+            "No excuses, no ifs and buts , enforcement is what we need."
+          ]
         ],
-        "but",
-      ],
+        "but"
+      ]
     ],
     [
       [
@@ -207,7 +207,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.007",
+          "m_en_us1229689.007"
         ],
         [
           "Mick Nolan kept a clean sheet <b>but</b> he had the advantage of a superb back sextet in front of him.",
@@ -215,7 +215,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.003",
+          "m_en_us1229689.003"
         ],
         [
           "I am clean <b>but</b> you are dirty",
@@ -223,7 +223,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.003",
+          "m_en_us1229689.003"
         ],
         [
           "It was a little different to what I would normally eat at home <b>but</b> it was delicious.",
@@ -231,7 +231,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "there was nothing to do <b>but</b> wait",
@@ -239,7 +239,7 @@ const responseTest = {
           null,
           null,
           3,
-          "neid_2670",
+          "neid_2670"
         ],
         [
           "he stumbled <b>but</b> didn't fall",
@@ -247,7 +247,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "In this event we will have no alternative <b>but</b> to look to you for recompense for all incurred costs.",
@@ -255,7 +255,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.008",
+          "m_en_us1229689.008"
         ],
         [
           "It was a scene which could have come out of a cheap thriller - <b>but</b> there was a difference.",
@@ -263,7 +263,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "Aden was a year older than herself and she never saw him as anything else <b>but</b> her goofy nerd friend.",
@@ -271,7 +271,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.008",
+          "m_en_us1229689.008"
         ],
         [
           "She knew he did not want to go, but she could still not help <b>but</b> feel anger at him.",
@@ -279,7 +279,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.004",
+          "m_en_us1229689.004"
         ],
         [
           "choose from a colorful array of oranges, cherries, and raspberries, to name <b>but</b> a few",
@@ -287,7 +287,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.010",
+          "m_en_us1229689.010"
         ],
         [
           "They are not creating any value <b>but</b> on the contrary they are a drag on our resources.",
@@ -295,7 +295,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.003",
+          "m_en_us1229689.003"
         ],
         [
           "So I didn't have any alternative then <b>but</b> to get up in front of everyone and attempt to play the thing.",
@@ -303,7 +303,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.008",
+          "m_en_us1229689.008"
         ],
         [
           "I'm sorry, <b>but</b> I can't pay you",
@@ -311,7 +311,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_gb0112250.004",
+          "m_en_gb0112250.004"
         ],
         [
           "it never rains <b>but</b> it pours",
@@ -319,7 +319,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_gb0112250.005",
+          "m_en_gb0112250.005"
         ],
         [
           "it was hard work <b>but</b> I'm pleased I did it",
@@ -327,7 +327,7 @@ const responseTest = {
           null,
           null,
           3,
-          "neid_2673",
+          "neid_2673"
         ],
         [
           "We did not know what to expect, <b>but</b> what a fantastic surprise night, it was a real thrill.",
@@ -335,7 +335,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.005",
+          "m_en_us1229689.005"
         ],
         [
           "In that Washington heat it seemed to take forever, <b>but</b> was still delicious an hour or so later.",
@@ -343,7 +343,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "The parliament's visit to Aberdeen last week was not cheap, <b>but</b> it was money well spent.",
@@ -351,7 +351,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "Nobody, <b>but</b> nobody, should eat a two pound burrito.",
@@ -359,7 +359,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.009",
+          "m_en_us1229689.009"
         ],
         [
           "If we want vehicles to be less polluting, then we have no choice <b>but</b> to find an alternative fuel.",
@@ -367,7 +367,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.008",
+          "m_en_us1229689.008"
         ],
         [
           "we can't do anything <b>but</b> someone gives out to us",
@@ -375,7 +375,7 @@ const responseTest = {
           null,
           null,
           3,
-          "neid_2679",
+          "neid_2679"
         ],
         [
           "Sorry to say this <b>but</b> there are some areas where I don't trust the men in white coats.",
@@ -383,7 +383,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.006",
+          "m_en_us1229689.006"
         ],
         [
           "This is another one of those Korean films that you cannot <b>but</b> have mixed feelings about.",
@@ -391,7 +391,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.004",
+          "m_en_us1229689.004"
         ],
         ["to name <b>but</b> a few", null, null, null, 3, "neid_2672"],
         [
@@ -400,7 +400,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.008",
+          "m_en_us1229689.008"
         ],
         [
           "Please forgive me, <b>but</b> it is the only way I know of getting my point of view across.",
@@ -408,7 +408,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.006",
+          "m_en_us1229689.006"
         ],
         [
           "Sure, most of the produce is much cheaper, <b>but</b> a lot of it isn't organically grown.",
@@ -416,7 +416,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.002",
+          "m_en_us1229689.002"
         ],
         [
           "For the water may clean you on the outside, <b>but</b> it cannot clean you on the inside if your heart is not pure.",
@@ -424,7 +424,7 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.003",
+          "m_en_us1229689.003"
         ],
         [
           "Sorry to sound pious <b>but</b> what about the homeless, the sick, the poor and neglected?",
@@ -432,11 +432,9 @@ const responseTest = {
           null,
           null,
           3,
-          "m_en_us1229689.006",
-        ],
-      ],
-    ],
-  ],
-};
-
-export { responseTest };
+          "m_en_us1229689.006"
+        ]
+      ]
+    ]
+  ]
+}

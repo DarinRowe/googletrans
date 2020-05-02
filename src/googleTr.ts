@@ -59,6 +59,24 @@ function translate(text: string, opts?: Options) {
     "Accept-Encoding": "gzip",
   };
 
+  // return new Promise((resolve, reject) => {
+  //   axios({
+  //     url: URL,
+  //     params: PARAMS,
+  //     headers: HEADERS,
+  //     timeout: 3 * 1000,
+  //     paramsSerializer: (params) => {
+  //       return qs.stringify(params, { arrayFormat: "repeat" });
+  //     },
+  //   })
+  //     .then((res) => {
+  //       resolve(getResult(res));
+  //     })
+  //     .catch((err) => {
+  //       reject(err);
+  //     });
+  // });
+
   return axios({
     url: URL,
     params: PARAMS,
@@ -117,26 +135,18 @@ function getResult(res: any) {
     result.from.language.iso = body[8][0][0];
   }
 
-  if (body[1][0][2]) result.to.translations = body[1][0][2];
+  // if (body[1][0][2]) result.to.translations = body[1][0][2];
 
   if (body[7] && body[7][0]) {
     let str = body[7][0];
-
     str = str.replace(/<b><i>/g, "[");
     str = str.replace(/<\/i><\/b>/g, "]");
-
     result.from.correct.value = str;
 
     let a = false;
     let b = false;
-    if (body[7][5] === true) {
-      a = true;
-    } else {
-      b = true;
-    }
-    if (a || b) {
-      result.from.correct.hasCorrectedText = true;
-    }
+    body[7][5] === true ? (a = true) : (b = true);
+    if (a || b) result.from.correct.hasCorrectedText = true;
   }
   return result;
 }
