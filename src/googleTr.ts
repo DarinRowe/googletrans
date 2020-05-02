@@ -135,7 +135,7 @@ function getResult(res: any) {
     result.from.language.iso = body[8][0][0];
   }
 
-  // if (body[1][0][2]) result.to.translations = body[1][0][2];
+  if (body[1] && body[1][0][2]) result.to.translations = body[1][0][2];
 
   if (body[7] && body[7][0]) {
     let str = body[7][0];
