@@ -4,4 +4,6 @@ tslint.json
 .prettierrc
 .gitignore
 yarn.lock
-coverage
+coverage/
+.travis.yml
+.coveralls.yml

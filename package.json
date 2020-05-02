@@ -5,7 +5,7 @@
   "files": [
     "lib/**/*"
   ],
-  "main": "index.js",
+  "main": "dist/googleTr.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
@@ -36,13 +36,13 @@
   },
   "homepage": "https://github.com/DarinRowe/googletrans#readme",
   "dependencies": {
-    "@types/qs": "^6.9.1",
     "axios": "^0.19.2",
     "qs": "^6.9.3"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.4",
+    "@types/qs": "^6.9.1",
     "coveralls": "^3.1.0",
     "jest": "^25.5.3",
     "ts-jest": "^25.4.0",
