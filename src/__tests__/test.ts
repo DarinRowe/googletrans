@@ -1,5 +1,7 @@
-import { translate, getRandom, getUserAgent } from "../googleTr";
+import { translate, getResult } from "../googleTr";
+import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
+import { responseTest } from "./resposeTest";
 import { getToken } from "../google_token";
 
 describe("translate Methods Test", () => {
@@ -38,7 +40,7 @@ describe("translate Methods Test", () => {
         expect(res.from.language.hasCorrectedLang).toBe(true);
       })
       .catch((err) => {
-        expect(err.message).toMatch("The language 「Green」is not suppored!");
+        expect(err.message).toMatch(/not/);
       });
   });
 
@@ -48,7 +50,7 @@ describe("translate Methods Test", () => {
         expect(res.text).toBe("Grün");
       })
       .catch((err) => {
-        expect(err.message).toMatch("The language 「Green」is not suppored!");
+        expect(err.message).toMatch(/not/);
       });
   });
 
@@ -136,5 +138,11 @@ describe("random number method Test", () => {
 describe("getUserAgent", () => {
   test("get user agent", () => {
     expect(getUserAgent()).toBeDefined();
+  });
+});
+
+describe("getReslut method Test", () => {
+  test("get", () => {
+    console.log(getResult(responseTest));
   });
 });

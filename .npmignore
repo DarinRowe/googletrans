@@ -4,3 +4,4 @@ tslint.json
 .prettierrc
 .gitignore
 yarn.lock
+coverage

@@ -2,7 +2,7 @@ import axios from "axios";
 import { isSupported, getCode } from "./languages";
 import qs from "qs";
 import { getToken } from "./google_token";
-const agentFile = require("./userAgents.json");
+import { getUserAgent } from "./utils";
 interface Options {
   from?: string;
   to?: string;
@@ -69,98 +69,77 @@ function translate(text: string, opts?: Options) {
     },
   })
     .then((res) => {
-      let result = {
-        text: "",
-        pronunciation: "",
-        from: {
-          language: {
-            //language
-            hasCorrectedLang: false, // correct source language
-            iso: "", // source language
-          },
-          correct: {
-            // correct source translate text
-            hasCorrectedText: false, // correct source text
-            value: "", // correct value
-          },
-        },
-        to: {
-          translations: [], // multiple translations
-        },
-        raw: "",
-      };
-      if (res.status === 200) result.raw = res.data;
-      const body = res.data;
-      const a = body[0] && body[0];
-      a.forEach((obj: string) => {
-        if (obj[0]) {
-          result.text += obj[0];
-        }
-        if (obj[2]) {
-          result.pronunciation += obj[2];
-        }
-      });
-
-      if (body[2] === body[8][0][0]) {
-        result.from.language.iso = body[2];
-      } else {
-        result.from.language.hasCorrectedLang = true;
-        result.from.language.iso = body[8][0][0];
-      }
-
-      if (body[1][0][2]) result.to.translations = body[1][0][2];
-
-      if (body[7] && body[7][0]) {
-        let str = body[7][0];
-
-        str = str.replace(/<b><i>/g, "[");
-        str = str.replace(/<\/i><\/b>/g, "]");
-
-        result.from.correct.value = str;
-
-        let a = false;
-        let b = false;
-        if (body[7][5] === true) {
-          a = true;
-        } else {
-          b = true;
-        }
-        if (a || b) {
-          result.from.correct.hasCorrectedText = true;
-        }
-      }
-      return result;
+      return getResult(res);
     })
     .catch((error) => {
       throw error;
     });
 }
 
-/**
- * Generating a Random User Agent
- * @return {String} - User Agent string
- */
-function getUserAgent() {
-  // const agentFile = fs.readFileSync("./userAgents.json");
-  const browsers = JSON.parse(agentFile)["browsers"];
-  const browsersKeys = Object.keys(browsers);
-  const browserNmb = getRandom(0, browsersKeys.length - 1);
-  const browsersKey = browsersKeys[browserNmb];
-  const userAgenLength = browsers[browsersKey].length - 1;
-  const userAgentNmb = getRandom(0, userAgenLength);
-  return browsers[browsersKey][userAgentNmb];
-}
+function getResult(res: any) {
+  let result = {
+    text: "",
+    pronunciation: "",
+    from: {
+      language: {
+        //language
+        hasCorrectedLang: false, // correct source language
+        iso: "", // source language
+      },
+      correct: {
+        // correct source translate text
+        hasCorrectedText: false, // correct source text
+        value: "", // correct value
+      },
+    },
+    to: {
+      translations: [], // multiple translations
+    },
+    raw: "",
+  };
 
-/**
- * Get an integer number between n and m.
- * @param {number} n - Min integer number
- * @param {number} m - Max integer number
- * @returns {number} - random number
- */
-function getRandom(n: number, m: number) {
-  var num = Math.floor(Math.random() * (m - n + 1) + n);
-  return num;
+  if (res.status === 200) result.raw = res.data;
+  const body = res.data;
+  const a = body[0] && body[0];
+  a.forEach((obj: string) => {
+    if (obj[0]) {
+      result.text += obj[0];
+    }
+    if (obj[2]) {
+      result.pronunciation += obj[2];
+    }
+  });
+
+  if (body[2] === body[8][0][0]) {
+    result.from.language.iso = body[2];
+  } else {
+    result.from.language.hasCorrectedLang = true;
+    result.from.language.iso = body[8][0][0];
+  }
+
+  if (body[1][0][2]) result.to.translations = body[1][0][2];
+
+  if (body[7] && body[7][0]) {
+    let str = body[7][0];
+
+    str = str.replace(/<b><i>/g, "[");
+    str = str.replace(/<\/i><\/b>/g, "]");
+
+    result.from.correct.value = str;
+
+    let a = false;
+    let b = false;
+    if (body[7][5] === true) {
+      a = true;
+    } else {
+      b = true;
+    }
+    if (a || b) {
+      result.from.correct.hasCorrectedText = true;
+    }
+  }
+  return result;
 }
 
 export default translate;
-export { translate, getRandom, getUserAgent };
+export { translate, getResult };

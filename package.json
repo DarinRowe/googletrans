@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "build": "tsc"
+    "build": "tsc",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
