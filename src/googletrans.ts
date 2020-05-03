@@ -73,23 +73,6 @@ async function translate(text: string, opts?: Options) {
   } catch (error) {
     throw error;
   }
-
-  // await axios({
-  //   adapter,
-  //   url: URL,
-  //   params: PARAMS,
-  //   headers: HEADERS,
-  //   timeout: 3 * 1000,
-  //   paramsSerializer: (params) => {
-  //     return qs.stringify(params, { arrayFormat: "repeat" });
-  //   },
-  // })
-  //   .then((res) => {
-  //     return getResult(res);
-  //   })
-  //   .catch((error) => {
-  //     throw error;
-  //   });
 }
 
 function getResult(res: any) {
