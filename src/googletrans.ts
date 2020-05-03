@@ -1,7 +1,7 @@
+import qs from "qs";
 import axios from "axios";
 import adapter from "axios/lib/adapters/http";
 import { isSupported, getCode } from "./languages";
-import qs from "qs";
 import { getToken } from "./googleToken";
 import { getUserAgent } from "./utils";
 interface Options {
@@ -10,14 +10,37 @@ interface Options {
   tld?: string;
   client?: string;
 }
+interface Result {
+  text: string;
+  textArray: string[];
+  pronunciation: string;
+  from: {
+    language: {
+      hasCorrectedLang: boolean;
+      iso: string;
+    };
+    correct: {
+      // correct source translate text
+      hasCorrectedText: boolean;
+      value: string;
+    };
+  };
+  to: {
+    translations: []; // multiple translations
+  };
+  raw: [];
+}
+
+function googletrans(text: string | string[], toLang: string) {
+  return translate(text, { to: toLang });
+}
 
 /**
- *
  * @param {string} text - The text to be translated
  * @param {Object} opts - Options
  * @return {Promise} - Axios Promise
  */
-async function translate(text: string, opts?: Options) {
+async function translate(text: string | string[], opts?: Options) {
   opts = opts || {};
   let e: Error;
   const FROMTO = [opts["from"], opts["to"]];
@@ -28,9 +51,31 @@ async function translate(text: string, opts?: Options) {
     }
   });
 
+  if (Array.isArray(text)) {
+    let str = "";
+    for (let i = 0; i < text.length; i++) {
+      const t = text[i];
+      if (t.length === 0 && i === 0) {
+        continue;
+      } else {
+        str += t + "\n";
+      }
+    }
+    // text.forEach((t) => {
+    //   if (t.length !== 0) str += t + "\n";
+    // });
+    text = str;
+  }
+
+  if (text.length === 0) {
+    e = new Error(`The text to be translated is empty!`);
+    throw e;
+  }
+
   opts.from = opts.from || "auto";
   opts.to = opts.to || "en";
   opts.tld = opts.tld || "com";
+  opts.client = opts.client || "t";
 
   opts.from = getCode(opts.from);
   opts.to = getCode(opts.to);
@@ -38,7 +83,7 @@ async function translate(text: string, opts?: Options) {
   const TOKEN = getToken(text);
 
   const PARAMS = {
-    client: opts.client || "t",
+    client: opts.client,
     sl: opts.from,
     tl: opts.to,
     hl: "en",
@@ -75,9 +120,10 @@ async function translate(text: string, opts?: Options) {
   }
 }
 
-function getResult(res: any) {
-  let result = {
+function getResult(res: any): Result {
+  let result: Result = {
     text: "",
+    textArray: [],
     pronunciation: "",
     from: {
       language: {
@@ -94,9 +140,9 @@ function getResult(res: any) {
     to: {
       translations: [], // multiple translations
     },
-    raw: "",
+    raw: [],
   };
-
+  if (res === null) return result;
   if (res.status === 200) result.raw = res.data;
   const body = res.data;
   const a = body[0] && body[0];
@@ -129,12 +175,15 @@ function getResult(res: any) {
     body[7][5] === true ? (a = true) : (b = true);
     if (a || b) result.from.correct.hasCorrectedText = true;
   }
+
+  if (result.text.indexOf("\n") !== -1) {
+    result.textArray = result.text.split("\n");
+  } else {
+    result.textArray.push(result.text);
+  }
   return result;
 }
 
-//tr()
-module.exports = translate;
-module.exports.getResult = getResult;
-
-// tr.translate
-export { translate, getResult };
+// ES modules
+export default googletrans;
+export { googletrans, translate, getResult };

@@ -11,6 +11,7 @@
 ## Features
 
 - Fast and reliable
+- Batch translation
 - Auto language detection
 - Spelling correction
 - Language correction
@@ -19,7 +20,6 @@
 
 ## TODO
 
-- Batch translation
 - Remove qs dependencies
 
 ## Installing
