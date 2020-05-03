@@ -1,4 +1,5 @@
 import axios from "axios";
+import adapter from "axios/lib/adapters/http";
 import { isSupported, getCode } from "./languages";
 import qs from "qs";
 import { getToken } from "./googleToken";
@@ -16,16 +17,14 @@ interface Options {
  * @param {Object} opts - Options
  * @return {Promise} - Axios Promise
  */
-function translate(text: string, opts?: Options) {
+async function translate(text: string, opts?: Options) {
   opts = opts || {};
   let e: Error;
   const FROMTO = [opts["from"], opts["to"]];
   FROMTO.forEach((lang) => {
     if (lang && !isSupported(lang)) {
       e = new Error(`The language 「${lang}」is not suppored!`);
-      return new Promise((resolve, reject) => {
-        reject(e);
-      });
+      throw e;
     }
   });
 
@@ -59,21 +58,38 @@ function translate(text: string, opts?: Options) {
     "Accept-Encoding": "gzip",
   };
 
-  return axios({
-    url: URL,
-    params: PARAMS,
-    headers: HEADERS,
-    timeout: 3 * 1000,
-    paramsSerializer: (params) => {
-      return qs.stringify(params, { arrayFormat: "repeat" });
-    },
-  })
-    .then((res) => {
-      return getResult(res);
-    })
-    .catch((error) => {
-      throw error;
+  try {
+    const res = await axios({
+      adapter,
+      url: URL,
+      params: PARAMS,
+      headers: HEADERS,
+      timeout: 3 * 1000,
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
     });
+    return getResult(res);
+  } catch (error) {
+    throw error;
+  }
+
+  // await axios({
+  //   adapter,
+  //   url: URL,
+  //   params: PARAMS,
+  //   headers: HEADERS,
+  //   timeout: 3 * 1000,
+  //   paramsSerializer: (params) => {
+  //     return qs.stringify(params, { arrayFormat: "repeat" });
+  //   },
+  // })
+  //   .then((res) => {
+  //     return getResult(res);
+  //   })
+  //   .catch((error) => {
+  //     throw error;
+  //   });
 }
 
 function getResult(res: any) {

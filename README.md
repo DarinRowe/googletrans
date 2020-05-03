@@ -22,6 +22,20 @@
 - Batch translation
 - Remove qs dependencies
 
+## Installing
+
+Using npm
+
+```
+npm i -S googletrans
+```
+
+Using yarn
+
+```
+yarn add googletrans
+```
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
