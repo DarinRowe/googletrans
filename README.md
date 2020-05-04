@@ -92,7 +92,7 @@ tr(["Saluton", "Mondo"], "en")
 
 ```
 
-> **NOTE:**  The first element of the text array can not empty.
+> **NOTE:**  The first element of the text array can not empty string.
 
 ### Spelling correction:
 
