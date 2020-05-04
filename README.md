@@ -3,7 +3,7 @@
 > Free and Unlimited Google translate API for node.js
 
 [![Build Status](https://travis-ci.com/DarinRowe/googletrans.svg?branch=master)](https://travis-ci.com/DarinRowe/googletrans)
-[![Coverage Status](https://coveralls.io/repos/github/DarinRowe/googletrans/badge.svg?branch=master)](https://coveralls.io/github/DarinRowe/googletrans?branch=master)
+[![Coverage Status](https://badgen.net/bundlephobia/minzip/googletrans)](https://bundlephobia.com/result?p=googletrans)
 [![install size](https://packagephobia.now.sh/badge?p=googletrans)](https://packagephobia.now.sh/result?p=googletrans)
 [![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://www.npmjs.com/package/googletrans)
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
