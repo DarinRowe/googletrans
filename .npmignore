@@ -7,3 +7,4 @@ yarn.lock
 coverage/
 .travis.yml
 .coveralls.yml
+CHANGELOG.md

@@ -56,14 +56,14 @@ async function translate(text: string | string[], opts?: Options) {
     for (let i = 0; i < text.length; i++) {
       const t = text[i];
       if (t.length === 0 && i === 0) {
-        continue;
+        const e = new Error(
+          "The first element of the text array is an empty string."
+        );
+        throw e;
       } else {
         str += t + "\n";
       }
     }
-    // text.forEach((t) => {
-    //   if (t.length !== 0) str += t + "\n";
-    // });
     text = str;
   }
 
@@ -184,6 +184,5 @@ function getResult(res: any): Result {
   return result;
 }
 
-// ES modules
 export default googletrans;
 export { googletrans, translate, getResult };

@@ -163,20 +163,19 @@ describe("getReslut method Test", () => {
   });
 });
 
-describe("googletrans", () => {
-  test("batch translation", async () => {
+describe("googletrans method Test", () => {
+  test("batch translation through array without empty string.", async () => {
     try {
       const res = await googletrans(["blue", "green", "yellow"], "nl");
       expect(res.text).toBe("blauw\ngroen\ngeel");
-      expect(res.textArray).toContain("blauw");
-      expect(res.textArray).toContain("groen");
-      expect(res.textArray).toContain("geel");
-      // expect(res.textArray).toContainEqual(["blauw", "groen", "geel"]);
+      expect(res.textArray).toContainEqual("blauw");
+      expect(res.textArray).toContainEqual("groen");
+      expect(res.textArray).toContainEqual("geel");
     } catch (error) {
       console.log(error);
     }
   });
-  test("batch translation by only one array.", async () => {
+  test("batch translation through an element of array.", async () => {
     try {
       const res = await googletrans(["green"], "nl");
       expect(res.text).toBe("groen");
@@ -187,7 +186,7 @@ describe("googletrans", () => {
       console.log(error);
     }
   });
-  test("batch translation by only one string.", async () => {
+  test("translation through an string.", async () => {
     try {
       const res = await googletrans("yellow", "nl");
       expect(res.textArray).toContain("geel");
@@ -197,43 +196,44 @@ describe("googletrans", () => {
       console.log(error);
     }
   });
-  test("batch translation by empty string array.", async () => {
+  test("batch translation through an empty element of array.", async () => {
     try {
       const res = await googletrans([""], "nl");
       expect(res.text).toBe("");
-      console.log("batch translation by empty string array: " + res);
+      expect(res.textArray).toContainEqual("");
     } catch (error) {
       expect(error.message).toMatch(/empty/);
     }
   });
-  test("batch translation by empty string array.", async () => {
+  test("translation through an empty string.", async () => {
     try {
       const res = await googletrans("", "nl");
       expect(res.text).toBe("");
+      expect(res.textArray).toContainEqual("");
     } catch (error) {
       expect(error.message).toMatch(/empty/);
     }
   });
-  test("batch translation by empty string array1.", async () => {
+  test("batch translation by an array with an empty string.", async () => {
     try {
-      const res = await googletrans(["Hello", ""], "nl");
-      expect(res.text).toBe("Hallo");
-      // expect(res.textArray).toContain("");
-      expect(res.textArray).toContain("Hallo");
-      expect(res.textArray).toContainEqual(["Hallo", ""]);
+      const res = await googletrans(
+        ["yellow", "green", "", "", "blue", ""],
+        "zh"
+      );
+      expect(res.text).toBe("黄色\n绿色\n\n\n蓝色");
+      expect(res.textArray).toContainEqual("");
+      expect(res.textArray).toContainEqual("黄色");
+      expect(res.textArray).toContainEqual("绿色");
+      expect(res.textArray).toContainEqual("蓝色");
     } catch (error) {
       console.log(error);
     }
   });
-  test("batch translation by empty string array2.", async () => {
+  test("batch translation by an array with empty string, and an empty string is the first element.", async () => {
     try {
       const res = await googletrans(["", "Hello"], "nl");
-      expect(res.text).toBe("Hallo");
-      // expect(res.textArray).toContain("");
-      expect(res.textArray).toContain("Hallo");
-      expect(res.textArray).toContainEqual(["", "Hallo"]);
     } catch (error) {
-      console.log(error);
+      expect(error.message).toMatch(/empty/);
     }
   });
 });

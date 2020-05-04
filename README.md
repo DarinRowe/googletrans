@@ -26,15 +26,117 @@
 
 Using npm
 
-```
+```bash
 npm i -S googletrans
 ```
 
 Using yarn
 
-```
+```bash
 yarn add googletrans
 ```
+
+## Example
+
+### CommonJS usage
+
+In order to gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
+
+```javascript
+const axios = require('axios').default;
+```
+
+### Basic usage : 
+
+Auto language detection.
+
+```javascript
+const tr = require("googletrans").default;
+
+// Promise
+tr("vue", "en")
+  .then((res) => {
+    // handle success
+    console.log(res.text); // view
+  })
+  .catch((error) => {
+    // handle error
+    console.log(error);
+  });
+
+// Want to use async/await？
+async function translation() {
+ try {
+      const res = await googletrans("vue", "en");
+      console.log(res.text); // view
+    } catch (error) {
+      console.log(error);
+    }
+}
+```
+
+### Batch translation：
+
+An array can be used to translate a batch of texts.
+
+```javascript
+const tr = require("googletrans").default;
+
+tr(["Saluton", "Mondo"], "en")
+  .then((res) => {
+    console.log(res.textArray); // [ 'Hello', 'world' ]
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+```
+
+> **NOTE:**  The first element of the text array can not empty.
+
+### Spelling correction:
+
+  If the API suggests a correction text,  `from.correct.hasCorrectedText` equals to `true`.
+
+ In this case, it will have the corrections delimited with brackets (`[ ]`):
+
+```javascript
+const tr = require("googletrans").default;
+
+tr("I spea English", "en")
+  .then((res) => {
+    console.log(res.from.correct.hasCorrectedText); // true
+  	console.log(res.from.correct.value:); // I [speak] English
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
+### Language correction:
+
+```javascript
+const tr = require("googletrans");
+
+tr.translate("vue", { from: "en", to: "nl" })
+  .then((res) => {
+    console.log(res.from.language.hasCorrectedLang); // true
+    console.log(res.from.language.iso); // fr
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
+## TypeScript
+
+googletrans includes [TypeScript](http://typescriptlang.org/) definitions.
+
+```javascript
+import tr from "googletrans";
+```
+
+
 
 ## License
 
