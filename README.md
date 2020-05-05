@@ -14,7 +14,6 @@
 - Batch translation
 - Auto language detection
 - Spelling correction
-- Language correction
 - HTTP/2 support
 - Connection pooling
 
@@ -113,20 +112,7 @@ tr("I spea English", "en")
   });
 ```
 
-### Language correction:
 
-```javascript
-const tr = require("googletrans");
-
-tr.translate("vue", { from: "en", to: "nl" })
-  .then((res) => {
-    console.log(res.from.language.hasCorrectedLang); // true
-    console.log(res.from.language.iso); // fr
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-```
 
 ## TypeScript
 
