@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.2.2 (May 5, 2020)
+
+- Fix README.md.
+
 ### 0.2.1 (May 5, 2020)
 
 Fixes and Functionality:

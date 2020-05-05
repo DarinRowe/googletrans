@@ -33,10 +33,10 @@ yarn add googletrans
 
 ## CommonJS usage
 
-In order to gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
+To gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
 
 ```javascript
-const axios = require('axios').default;
+const tr = require("googletrans").default;
 ```
 
 ## Super simple to use
@@ -124,7 +124,7 @@ tr("Hello", { from: "en", to: "ja", tld: "co.jp" })
 
 ### Language correction
 
-If the source language is not right,  `hasCorrectedLang` will equals to `true`.
+If the source language is not right,  `hasCorrectedLang` will equal to `true`.
 
 ```javascript
 tr("Hero", { from: "pt", to: "nl" })
@@ -203,7 +203,7 @@ tr(text, options)
 
 ### Returns: Result Schema
 
-The result for a request contains the following information.
+The result of a request contains the following information.
 
 ```javascript
 Result {
