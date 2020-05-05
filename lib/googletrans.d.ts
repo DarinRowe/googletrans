@@ -8,22 +8,19 @@ interface Result {
     text: string;
     textArray: string[];
     pronunciation: string;
-    from: {
-        language: {
-            hasCorrectedLang: boolean;
-            iso: string;
-        };
-        correct: {
-            hasCorrectedText: boolean;
-            value: string;
-        };
-    };
-    to: {
-        translations: [];
-    };
+    hasCorrectedLang: boolean;
+    src: string;
+    hasCorrectedText: boolean;
+    correctedText: string;
+    translations: [];
     raw: [];
 }
-declare function googletrans(text: string | string[], toLang: string): Promise<Result>;
+/**
+ * Translation
+ * @param text - The text to be translated.
+ * @param options - The  translation options. If the param is string, mean the language you want to translate into. If the param is object，can set more options.
+ */
+declare function googletrans(text: string | string[], options?: string | Options): Promise<Result>;
 /**
  * @param {string} text - The text to be translated
  * @param {Object} opts - Options

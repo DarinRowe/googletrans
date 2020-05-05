@@ -14,22 +14,18 @@ interface Result {
   text: string;
   textArray: string[];
   pronunciation: string;
-  from: {
-    language: {
-      hasCorrectedLang: boolean;
-      iso: string;
-    };
-    correct: {
-      hasCorrectedText: boolean;
-      value: string;
-    };
-  };
-  to: {
-    translations: []; // multiple translations
-  };
+  hasCorrectedLang: boolean; // has correct source language?
+  src: string; // source language
+  hasCorrectedText: boolean; // has correct source text?
+  correctedText: string; // correct source text
+  translations: []; // multiple translations
   raw: [];
 }
-
+/**
+ * Translation
+ * @param text - The text to be translated.
+ * @param options - The  translation options. If the param is string, mean the language you want to translate into. If the param is object，can set more options.
+ */
 function googletrans(text: string | string[], options?: string | Options) {
   let a: any;
   if (typeof options === "string") {
@@ -130,21 +126,11 @@ function getResult(res: any): Result {
     text: "",
     textArray: [],
     pronunciation: "",
-    from: {
-      language: {
-        //language
-        hasCorrectedLang: false, // correct source language
-        iso: "", // source language
-      },
-      correct: {
-        // correct source translate text
-        hasCorrectedText: false, // correct source text
-        value: "", // correct value
-      },
-    },
-    to: {
-      translations: [], // multiple translations
-    },
+    hasCorrectedLang: false,
+    src: "",
+    hasCorrectedText: false,
+    correctedText: "",
+    translations: [],
     raw: [],
   };
   if (res === null) return result;
@@ -160,24 +146,24 @@ function getResult(res: any): Result {
   });
 
   if (body[2] === body[8][0][0]) {
-    result.from.language.iso = body[2];
+    result.src = body[2];
   } else {
-    result.from.language.hasCorrectedLang = true;
-    result.from.language.iso = body[8][0][0];
+    result.hasCorrectedLang = true;
+    result.src = body[8][0][0];
   }
 
-  if (body[1] && body[1][0][2]) result.to.translations = body[1][0][2];
+  if (body[1] && body[1][0][2]) result.translations = body[1][0][2];
 
   if (body[7] && body[7][0]) {
     let str = body[7][0];
     str = str.replace(/<b><i>/g, "[");
     str = str.replace(/<\/i><\/b>/g, "]");
-    result.from.correct.value = str;
+    result.correctedText = str;
 
     let a = false;
     let b = false;
     body[7][5] === true ? (a = true) : (b = true);
-    if (a || b) result.from.correct.hasCorrectedText = true;
+    if (a || b) result.hasCorrectedText = true;
   }
 
   if (result.text.indexOf("\n") !== -1) {
