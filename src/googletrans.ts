@@ -20,7 +20,6 @@ interface Result {
       iso: string;
     };
     correct: {
-      // correct source translate text
       hasCorrectedText: boolean;
       value: string;
     };
@@ -31,8 +30,14 @@ interface Result {
   raw: [];
 }
 
-function googletrans(text: string | string[], toLang: string) {
-  return translate(text, { to: toLang });
+function googletrans(text: string | string[], options?: string | Options) {
+  let a: any;
+  if (typeof options === "string") {
+    a = { to: options };
+  } else {
+    a = options;
+  }
+  return translate(text, a);
 }
 
 /**
@@ -145,8 +150,7 @@ function getResult(res: any): Result {
   if (res === null) return result;
   if (res.status === 200) result.raw = res.data;
   const body = res.data;
-  const a = body[0] && body[0];
-  a.forEach((obj: string) => {
+  body[0].forEach((obj: string) => {
     if (obj[0]) {
       result.text += obj[0];
     }

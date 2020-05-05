@@ -9,14 +9,14 @@ const resposeTest4 = require("./resposeTest4.json");
 
 describe("translate Methods Test", () => {
   test("translate without any options", () => {
-    return translate("vue").then((res) => {
+    return googletrans("vue").then((res) => {
       expect(res.from.language.iso).toBe("fr");
       expect(res.from.language.hasCorrectedLang).toBe(false);
     });
   });
 
   test("translate some misspelled English text to German ", () => {
-    return translate("I spea Dutch", { from: "en", to: "de" }).then((res) => {
+    return googletrans("I spea Dutch", { from: "en", to: "de" }).then((res) => {
       expect(res.text).toBe("ich spreche Niederländisch");
       expect(res.from.language.iso).toBe("en");
       expect(res.from.correct.hasCorrectedText).toBe(true);
@@ -25,7 +25,7 @@ describe("translate Methods Test", () => {
   });
 
   test("translate English text setting the source language as Portuguese", () => {
-    return translate("Hero", { from: "pt", to: "nl" })
+    return googletrans("Hero", { from: "pt", to: "nl" })
       .then((res) => {
         expect(res.from.language.hasCorrectedLang).toBe(true);
         expect(res.from.language.iso).toBe("en");
@@ -37,7 +37,7 @@ describe("translate Methods Test", () => {
 
   test("async", async () => {
     try {
-      const res = await translate("Hero", { to: "zh" });
+      const res = await googletrans("Hero", { to: "zh" });
       expect(res.text).toBe("英雄");
     } catch (e) {
       console.log(e);
@@ -45,7 +45,7 @@ describe("translate Methods Test", () => {
   });
 
   test("translate from an unsupported language", () => {
-    return translate("Green", { from: "Green", to: "de" })
+    return googletrans("Green", { from: "Green", to: "de" })
       .then((res) => {
         expect(res.text).toBe("Grün");
         expect(res.from.language.iso).toBe("en");
@@ -57,7 +57,7 @@ describe("translate Methods Test", () => {
   });
 
   test("translate to an unsupported language", () => {
-    return translate("Green", { from: "en", to: "Green" })
+    return googletrans("Green", { from: "en", to: "Green" })
       .then((res) => {
         expect(res.text).toBe("Green");
       })
@@ -67,7 +67,7 @@ describe("translate Methods Test", () => {
   });
 
   test("translate from dutch to english using language names instead of codes", () => {
-    return translate("iets", { from: "dutch", to: "english" }).then((res) => {
+    return googletrans("iets", { from: "dutch", to: "english" }).then((res) => {
       expect(res.text).toBe("something");
       expect(res.from.language.iso).toBe("nl");
     });

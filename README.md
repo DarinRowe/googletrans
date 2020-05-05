@@ -17,10 +17,6 @@
 - HTTP/2 support
 - Connection pooling
 
-## TODO
-
-- Remove qs dependencies
-
 ## Installing
 
 Using npm

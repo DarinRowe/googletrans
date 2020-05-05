@@ -1,5 +1,4 @@
 function TL(a: string) {
-  var k = "";
   var b = 406644;
   var b1 = 3293161072;
 
