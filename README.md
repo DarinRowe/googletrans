@@ -182,7 +182,7 @@ tr(text, options)
 ### Arguments
 
 - text  - The text to be translated.
-- options  - The  translation options. If the param is string, mean the language you want to translate into.If the param is object, can set more options.
+- options  - The  translation options. If the param is string, mean the language you want to translate into.If the param is object, it can set more options.
 
 ### Options
 
