@@ -21,6 +21,7 @@ interface Result {
   translations: []; // multiple translations
   raw: [];
 }
+
 /**
  * Translation
  * @param text - The text to be translated.
