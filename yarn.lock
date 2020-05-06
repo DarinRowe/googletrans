@@ -2778,9 +2778,9 @@ punycode@^2.1.0, punycode@^2.1.1:
   integrity sha1-tYsBCsQMIsVldhbI0sLALHv0eew=
 
 qs@^6.9.3:
-  version "6.9.3"
-  resolved "https://registry.npm.taobao.org/qs/download/qs-6.9.3.tgz#bfadcd296c2d549f1dffa560619132c977f5008e"
-  integrity sha1-v63NKWwtVJ8d/6VgYZEyyXf1AI4=
+  version "6.9.4"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.4.tgz#9090b290d1f91728d3c22e54843ca44aea5ab687"
+  integrity sha512-A1kFqHekCTM7cz0udomYUoYNWjBebHm/5wzU/XqrBRBNWectVH0QIiN+NEcZ0Dte5hvzHwbr8+XQmguPhJ6WdQ==
 
 qs@~6.5.2:
   version "6.5.2"
