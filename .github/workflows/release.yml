@@ -1,5 +1,5 @@
 # This is a workflow to create github release for a tag and publish the package to npm repo
-name: ci
+name: release
 on:
   push:
     tags:
@@ -34,18 +34,6 @@ jobs:
       - run: yarn install
       - run: yarn test
       # - run: yarn run coveralls
-
-  # build job
-  # build:
-  #   needs: [test]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: "10.x"
-  #     - run: yarn install
-  #     - run: npm run build
 
   # release job
   release:
