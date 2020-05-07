@@ -49,7 +49,7 @@ jobs:
 
   # release job
   release:
-    needs: [setup_variables, test, build]
+    needs: [setup_variables, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
