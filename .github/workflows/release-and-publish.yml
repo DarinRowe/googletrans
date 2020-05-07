@@ -81,8 +81,8 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      # - name: Publish with next tag
-      #   if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
-      #   run: npm publish --access public --tag next
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Publish with next tag
+        if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+        run: npm publish --access public --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
