@@ -10,8 +10,6 @@
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "coveralls": "coveralls < coverage/lcov.info",
-    "version": "npm run build && git add -A src",
-    "postversion": "git push && git push --tags",
     "postnpm": "npm publish"
   },
   "repository": {

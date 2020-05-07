@@ -8,3 +8,5 @@ coverage/
 .travis.yml
 .coveralls.yml
 CHANGELOG.md
+.github
+jestconfig.json

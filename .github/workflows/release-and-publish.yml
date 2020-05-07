@@ -33,6 +33,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: yarn install
       - run: yarn test
+      # - run: yarn run coveralls
 
   # build job
   build:
@@ -61,3 +62,27 @@ jobs:
           release_name: ${{ github.ref }}
           draft: false
           prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+
+  # publish job
+  publish_to_npm:
+    needs: [setup_variables, test, build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+          registry-url: https://registry.npmjs.org/
+      - name: Check lock file
+        run: npm ci
+      - name: Publish with latest tag
+        if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      # - name: Publish with next tag
+      #   if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+      #   run: npm publish --access public --tag next
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
