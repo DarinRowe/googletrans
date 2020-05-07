@@ -22,6 +22,7 @@ const langs = {
   zh: "Chinese (Simplified)",
   "zh-cn": "Chinese (Simplified)",
   "zh-tw": "Chinese (Traditional)",
+  "zh-hk": "Chinese (Traditional)",
   co: "Corsican",
   hr: "Croatian",
   cs: "Czech",
