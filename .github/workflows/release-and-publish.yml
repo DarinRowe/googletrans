@@ -38,14 +38,11 @@ jobs:
   build:
     needs: [test]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["10", "12"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: "10.x"
       - run: yarn install
       - run: npm run build
 
@@ -53,9 +50,6 @@ jobs:
   release:
     needs: [setup_variables, test, build]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["10", "12"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/create-release@v1
