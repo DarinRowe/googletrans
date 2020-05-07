@@ -5,7 +5,7 @@ on:
     tags:
       # patterns to match for tag creation. Here all tags similar to v1.0 or
       # v1.2.0 will trigger this action
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 jobs:
   setup_variables:
     runs-on: ubuntu-latest
@@ -19,54 +19,51 @@ jobs:
         run: echo "::set-output name=latest::$LATEST"
         env:
           LATEST: ${{ contains(github.ref, '-alpha') != true && contains(github.ref, '-beta') != true && contains(github.ref, '-rc') != true }}
- 
-  # test job 
+
+  # test job
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '10','12']
+        node: ["10", "12"]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - run: yarn install
-    - run: yarn test
-      
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install
+      - run: yarn test
+
   # build job
   build:
     needs: [test]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '10','12' ]
+        node: ["10", "12"]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - run: yarn install
-    - run: npm run build
-  
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install
+      - run: npm run build
+
   # release job
   release:
-     needs: [setup_variables,test,build]
-     runs-on: ubuntu-latest
-     strategy:
-       matrix:
-         node: [ '10','12']
-     steps:
-        - uses: actions/checkout@v2
-        - uses: actions/create-release@v1
-          env:
-           # this is provided by github, you don't need to do anything here
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: ${{ github.ref }}
-            draft: false
-            prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
-          
-          
-
+    needs: [setup_variables, test, build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["10", "12"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/create-release@v1
+        env:
+          # this is provided by github, you don't need to do anything here
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
