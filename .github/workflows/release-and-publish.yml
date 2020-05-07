@@ -1,33 +1,72 @@
 # This is a workflow to create github release for a tag and publish the package to npm repo
 name: release-and-publish
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     tags:
       # patterns to match for tag creation. Here all tags similar to v1.0 or
       # v1.2.0 will trigger this action
       - 'v[0-9]+.[0-9]+.[0-9]+*'
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  setup_variables:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    outputs:
+      isLatest: ${{ steps.release_type.outputs.latest }}
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - id: release_type
+        name: Identify release type
+        # For understanding how to set output read:
+        # https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
+        run: echo "::set-output name=latest::$LATEST"
+        env:
+          LATEST: ${{ contains(github.ref, '-alpha') != true && contains(github.ref, '-beta') != true && contains(github.ref, '-rc') != true }}
+ 
+  # test job 
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '10','12']
+    steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node }}
+    - run: yarn install
+    - run: yarn test
+      
+  # build job
+  build:
+    needs: [test]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '10','12' ]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node }}
+    - run: yarn install
+    - run: npm run build
+  
+  # release job
+  release:
+     needs: [setup_variables,test,build]
+     runs-on: ubuntu-latest
+     strategy:
+       matrix:
+         node: [ '10','12']
+     steps:
+        - uses: actions/checkout@v2
+        - uses: actions/create-release@v1
+          env:
+           # this is provided by github, you don't need to do anything here
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: ${{ github.ref }}
+            draft: false
+            prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+          
+          
 
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
