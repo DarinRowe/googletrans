@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.2.3 (May 7, 2020)
+### 0.2.3 (May 8, 2020)
 
 - Support "zh-hk" language.
 - Supplement README.md.
