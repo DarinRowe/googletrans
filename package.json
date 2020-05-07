@@ -10,7 +10,7 @@
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "coveralls": "coveralls < coverage/lcov.info",
-    "postnpm": "npm publish"
+    "version": "yarn version"
   },
   "repository": {
     "type": "git",

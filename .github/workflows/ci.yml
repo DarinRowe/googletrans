@@ -36,16 +36,16 @@ jobs:
       # - run: yarn run coveralls
 
   # build job
-  build:
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "10.x"
-      - run: yarn install
-      - run: npm run build
+  # build:
+  #   needs: [test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: "10.x"
+  #     - run: yarn install
+  #     - run: npm run build
 
   # release job
   release:
@@ -76,6 +76,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Check lock file
         run: npm ci
+      - name: Build
+        run: npm run build
       - name: Publish with latest tag
         if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
         run: npm publish --access public
