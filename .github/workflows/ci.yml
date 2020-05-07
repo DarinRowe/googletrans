@@ -65,7 +65,7 @@ jobs:
 
   # publish job
   publish_to_npm:
-    needs: [setup_variables, test, build]
+    needs: [setup_variables, test]
     runs-on: ubuntu-latest
 
     steps:
@@ -76,7 +76,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Check lock file
         run: npm ci
-      - name: Build
+      - name: Build js
         run: npm run build
       - name: Publish with latest tag
         if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
