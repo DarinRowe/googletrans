@@ -134,8 +134,12 @@ function getResult(res: any): Result {
     translations: [],
     raw: [],
   };
-  if (res === null) return result;
-  if (res.status === 200) result.raw = res.data;
+
+  if (res !== null && res.status === 200) {
+    result.raw = res.data;
+  } else {
+    return result;
+  }
   const body = res.data;
   body[0].forEach((obj: string) => {
     if (obj[0]) {
@@ -161,10 +165,7 @@ function getResult(res: any): Result {
     str = str.replace(/<\/i><\/b>/g, "]");
     result.correctedText = str;
 
-    let a = false;
-    let b = false;
-    body[7][5] === true ? (a = true) : (b = true);
-    if (a || b) result.hasCorrectedText = true;
+    if (body[7][5]) result.hasCorrectedText = true;
   }
 
   if (result.text.indexOf("\n") !== -1) {

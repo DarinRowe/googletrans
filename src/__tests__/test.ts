@@ -12,6 +12,7 @@ describe("translate Methods Test", () => {
     return googletrans("vue").then((res) => {
       expect(res.src).toBe("fr");
       expect(res.hasCorrectedLang).toBe(false);
+      expect(res.hasCorrectedText).toBe(false);
     });
   });
 
@@ -29,6 +30,7 @@ describe("translate Methods Test", () => {
       .then((res) => {
         expect(res.hasCorrectedLang).toBe(true);
         expect(res.src).toBe("en");
+        expect(res.hasCorrectedText).toBe(false);
       })
       .catch((err) => {
         console.log(err);
@@ -39,6 +41,7 @@ describe("translate Methods Test", () => {
     try {
       const res = await googletrans("Hero", { to: "zh" });
       expect(res.text).toBe("英雄");
+      expect(res.hasCorrectedText).toBe(false);
     } catch (e) {
       console.log(e);
     }
@@ -50,6 +53,7 @@ describe("translate Methods Test", () => {
         expect(res.text).toBe("Grün");
         expect(res.src).toBe("en");
         expect(res.hasCorrectedLang).toBe(true);
+        expect(res.hasCorrectedText).toBe(false);
       })
       .catch((err) => {
         expect(err.message).toMatch(/not/);
@@ -60,6 +64,7 @@ describe("translate Methods Test", () => {
     return googletrans("Green", { from: "en", to: "Green" })
       .then((res) => {
         expect(res.text).toBe("Green");
+        expect(res.hasCorrectedText).toBe(false);
       })
       .catch((err) => {
         expect(err.message).toMatch(/not/);
@@ -71,6 +76,24 @@ describe("translate Methods Test", () => {
       expect(res.text).toBe("something");
       expect(res.src).toBe("nl");
     });
+  });
+  test("zh-hk", async () => {
+    try {
+      const res = await googletrans("media", "zh-hk");
+      expect(res.text).toBe("媒體");
+      expect(res.hasCorrectedText).toBe(false);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  test("zh-sg", async () => {
+    try {
+      const res = await googletrans("Game console", "zh-sg");
+      expect(res.text).toBe("游戏机");
+      expect(res.hasCorrectedText).toBe(false);
+    } catch (error) {
+      console.log(error);
+    }
   });
   test("batch translation through array without empty string.", async () => {
     try {
@@ -197,6 +220,16 @@ describe("getToken method Test", () => {
 
   test("get Token by English", () => {
     expect(getToken("Green")).toBe("701361.821189");
+  });
+
+  test("Unicode > 2048", () => {
+    expect(getToken("⁉")).toBe("631846.1019986");
+  });
+
+  test("2048 > Unicode > 128", () => {
+    // const a = getToken("ᢈ");
+    // console.log(a);
+    expect(getToken("ᢈ")).toBe("951746.569782");
   });
 });
 
