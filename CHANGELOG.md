@@ -2,8 +2,9 @@
 
 ### 0.2.3 (May 8, 2020)
 
-- Support "zh-hk" language.
+- Support "zh-hk" & "Filipino" & "zh-sg" language.
 - Supplement README.md.
+- Significantly reduce the package size.
 
 ### 0.2.2 (May 5, 2020)
 

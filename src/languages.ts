@@ -21,6 +21,7 @@ const langs = {
   ny: "Chichewa",
   zh: "Chinese (Simplified)",
   "zh-cn": "Chinese (Simplified)",
+  "zh-sg": "Chinese (Simplified)",
   "zh-tw": "Chinese (Traditional)",
   "zh-hk": "Chinese (Traditional)",
   co: "Corsican",
@@ -112,6 +113,7 @@ const langs = {
   yi: "Yiddish",
   yo: "Yoruba",
   zu: "Zulu",
+  fil: "Filipino",
 };
 
 /**
