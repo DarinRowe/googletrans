@@ -73,6 +73,10 @@ async function translate(text: string | string[], opts?: Options) {
     e = new Error(`The text to be translated is empty!`);
     throw e;
   }
+  if (text.length > 15000) {
+    e = new Error(`The text is over the maximum character limit ( 15k )!`);
+    throw e;
+  }
 
   opts.from = opts.from || "auto";
   opts.to = opts.to || "en";

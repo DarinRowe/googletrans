@@ -9,3 +9,7 @@ yarn.lock
 .travis.yml
 .coveralls.yml
 jestconfig.json
+googleToken.d.ts
+languages.d.ts
+userAgents.d.ts
+utils.d.ts
