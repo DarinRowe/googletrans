@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/DarinRowe/googletrans/badge.svg?branch=master)](https://coveralls.io/github/DarinRowe/googletrans?branch=master)
 [![install size](https://badgen.net/bundlephobia/minzip/googletrans)](https://bundlephobia.com/result?p=googletrans)
 [![dependencies Status](https://david-dm.org/DarinRowe/googletrans/status.svg)](https://david-dm.org/DarinRowe/googletrans)
-[![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://www.npmjs.com/package/googletrans)
+[![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://github.com/DarinRowe/googletrans/blob/master/LICENSE.md)
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 
 <!-- https://badgen.net/packagephobia/publish/googletrans -->

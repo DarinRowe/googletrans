@@ -6,7 +6,7 @@
 - [Feature] Supplement README.md.
 - [Refactor] Remove useagents.json. Significantly reduce the package size, MINIFIED size:79.8kB => 32.8kB, MINIFIED + GZIPPED:16.7kB => 11.4kB.
 - [Meta] Add stale.yml
-- [Test] Add Unicode > 2048 && 2048 > Unicode > 128 test. COVERAGE:94.44% =>95.34%
+- [Testing] Add Unicode > 2048 && 2048 > Unicode > 128 test. COVERAGE:94.44% => 95.34%
 - [CI] Add release.yml, to release and pulish to npmjs
 - [Meta] Add dist lib folder to .gitignore
 
