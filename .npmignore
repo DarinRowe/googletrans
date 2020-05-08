@@ -3,10 +3,10 @@ tsconfig.json
 tslint.json
 .prettierrc
 .gitignore
+.github
 yarn.lock
-coverage/
+coverage
 .travis.yml
 .coveralls.yml
 CHANGELOG.md
-.github
 jestconfig.json

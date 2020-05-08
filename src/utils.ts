@@ -1,11 +1,11 @@
-const agentFile = require("./userAgents.json");
+const agentFile = require("../config/userAgents.json");
 
 /**
  * Generating a Random User Agent
  * @return {String} - User Agent string
  */
 function getUserAgent() {
-  // const agentFile = fs.readFileSync("./userAgents.json");
+  // const agentFile = fs.readFileSync("../config/userAgents.json");
   const browsers = JSON.parse(agentFile)["browsers"];
   const browsersKeys = Object.keys(browsers);
   const browserNmb = getRandom(0, browsersKeys.length - 1);
