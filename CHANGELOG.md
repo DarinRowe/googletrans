@@ -2,13 +2,17 @@
 
 ### 0.2.3 (May 8, 2020)
 
-- Support "zh-hk" & "Filipino" & "zh-sg" language.
-- Supplement README.md.
-- Significantly reduce the package size.
+- [Feature] Support "zh-hk" & "Filipino" & "zh-sg" language.
+- [Feature] Supplement README.md.
+- [Refactor] Remove useagents.json. Significantly reduce the package size, MINIFIED size:79.8kB => 32.8kB, MINIFIED + GZIPPED:16.7kB => 11.4kB.
+- [Meta] Add stale.yml
+- [Test] Add Unicode > 2048 && 2048 > Unicode > 128 test. COVERAGE:94.44% =>95.34%
+- [CI] Add release.yml, to release and pulish to npmjs
+- [Meta] Add dist lib folder to .gitignore
 
 ### 0.2.2 (May 5, 2020)
 
-- Fix README.md.
+- [Docs] Fix README.md.
 
 ### 0.2.1 (May 5, 2020)
 

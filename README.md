@@ -9,6 +9,10 @@
 [![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://www.npmjs.com/package/googletrans)
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 
+<!-- https://badgen.net/packagephobia/publish/googletrans -->
+
+<!-- https://badgen.net/bundlephobia/min/googletrans -->
+
 ## Features
 
 - Fast and reliable
