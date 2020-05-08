@@ -1,12 +1,11 @@
-const agentFile = require("../uas/userAgents.json");
+import { userAgents } from "./userAgents";
 
 /**
  * Generating a Random User Agent
  * @return {String} - User Agent string
  */
 function getUserAgent() {
-  // const agentFile = fs.readFileSync("../uas/userAgents.json");
-  const browsers = agentFile["browsers"];
+  const browsers = userAgents["browsers"];
   const browsersKeys = Object.keys(browsers);
   const browserNmb = getRandom(0, browsersKeys.length - 1);
   const browsersKey = browsersKeys[browserNmb];

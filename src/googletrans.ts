@@ -135,11 +135,8 @@ function getResult(res: any): Result {
     raw: [],
   };
 
-  if (res !== null && res.status === 200) {
-    result.raw = res.data;
-  } else {
-    return result;
-  }
+  if (res === null) return result;
+  if (res.status === 200) result.raw = res.data;
   const body = res.data;
   body[0].forEach((obj: string) => {
     if (obj[0]) {
