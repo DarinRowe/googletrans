@@ -8,5 +8,4 @@ tslint.json
 yarn.lock
 .travis.yml
 .coveralls.yml
-./CHANGELOG.md
 jestconfig.json
