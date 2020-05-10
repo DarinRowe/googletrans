@@ -167,6 +167,20 @@ describe("translate Methods Test", () => {
       expect(error.message).toMatch(/empty/);
     }
   });
+  test("The text is over the maximum character limit ( 15k )", () => {
+    let str = "";
+    for (let i = 0; i < 750; i++) {
+      const a = "HelloWorld!HelloWorld!";
+      str += a;
+    }
+
+    return googletrans(str, "fr")
+      .then((res) => {})
+      .catch((error) => {
+        console.log(error.message);
+        expect(error.message).toMatch(/maximum/);
+      });
+  });
 });
 
 describe("isSupported method Test", () => {
