@@ -43,8 +43,8 @@
     "@types/node": "^13.13.4",
     "@types/qs": "^6.9.2",
     "coveralls": "^3.1.0",
-    "jest": "^26.0.1",
-    "ts-jest": "^25.4.0",
+    "jest": "^25.5.4",
+    "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
   }
 }

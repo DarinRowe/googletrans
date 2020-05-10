@@ -31,9 +31,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn test
-      # - run: yarn run coveralls
+      - run: npm ci
+      - run: npm test
+      # - run: npm run coveralls
 
   # release job
   release:
