@@ -123,14 +123,14 @@ const langs = {
  */
 function getCode(desiredLang: string) {
   const unSupported = "UNSUPPORTED";
-  desiredLang = desiredLang.toLowerCase();
+  const lowerLanguage = desiredLang.toLowerCase();
 
-  if (typeof langs[desiredLang] !== "undefined") {
-    return desiredLang;
+  if (typeof langs[lowerLanguage] !== "undefined") {
+    return lowerLanguage;
   }
 
   const keys = Object.keys(langs).filter((key) => {
-    return langs[key].toLowerCase() === desiredLang;
+    return langs[key].toLowerCase() === lowerLanguage;
   });
 
   if (typeof keys[0] === "undefined") return unSupported;

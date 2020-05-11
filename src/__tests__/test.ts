@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
 import { getToken } from "../googleToken";

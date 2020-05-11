@@ -8,6 +8,7 @@ tslint.json
 yarn.lock
 .travis.yml
 .coveralls.yml
+.eslint.js
 jestconfig.json
 googleToken.d.ts
 languages.d.ts

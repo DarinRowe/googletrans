@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: "10.x"
           registry-url: https://registry.npmjs.org/
-      - name: Check lock file
+      - name: Check lock file & install
         run: npm ci
       - name: Build js
         run: npm run build

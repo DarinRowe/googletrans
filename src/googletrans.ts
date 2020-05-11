@@ -43,9 +43,10 @@ function googletrans(text: string | string[], options?: string | Options) {
  * @return {Promise} - Axios Promise
  */
 async function translate(text: string | string[], opts?: Options) {
-  opts = opts || {};
+  let _opts = opts || {};
+  let _text = text;
   let e: Error;
-  const FROMTO = [opts["from"], opts["to"]];
+  const FROMTO = [_opts["from"], _opts["to"]];
   FROMTO.forEach((lang) => {
     if (lang && !isSupported(lang)) {
       e = new Error(`The language 「${lang}」is not suppored!`);
@@ -53,10 +54,10 @@ async function translate(text: string | string[], opts?: Options) {
     }
   });
 
-  if (Array.isArray(text)) {
+  if (Array.isArray(_text)) {
     let str = "";
-    for (let i = 0; i < text.length; i++) {
-      const t = text[i];
+    for (let i = 0; i < _text.length; i++) {
+      const t = _text[i];
       if (t.length === 0 && i === 0) {
         const e = new Error(
           "The first element of the text array is an empty string."
@@ -66,32 +67,32 @@ async function translate(text: string | string[], opts?: Options) {
         str += t + "\n";
       }
     }
-    text = str;
+    _text = str;
   }
 
-  if (text.length === 0) {
+  if (_text.length === 0) {
     e = new Error(`The text to be translated is empty!`);
     throw e;
   }
-  if (text.length > 15000) {
+  if (_text.length > 15000) {
     e = new Error(`The text is over the maximum character limit ( 15k )!`);
     throw e;
   }
 
-  opts.from = opts.from || "auto";
-  opts.to = opts.to || "en";
-  opts.tld = opts.tld || "com";
-  opts.client = opts.client || "t";
+  _opts.from = _opts.from || "auto";
+  _opts.to = _opts.to || "en";
+  _opts.tld = _opts.tld || "com";
+  _opts.client = _opts.client || "t";
 
-  opts.from = getCode(opts.from);
-  opts.to = getCode(opts.to);
-  const URL = "https://translate.google." + opts.tld + "/translate_a/single";
-  const TOKEN = getToken(text);
+  _opts.from = getCode(_opts.from);
+  _opts.to = getCode(_opts.to);
+  const URL = "https://translate.google." + _opts.tld + "/translate_a/single";
+  const TOKEN = getToken(_text);
 
   const PARAMS = {
-    client: opts.client,
-    sl: opts.from,
-    tl: opts.to,
+    client: _opts.client,
+    sl: _opts.from,
+    tl: _opts.to,
     hl: "en",
     dt: ["at", "bd", "ex", "ld", "md", "qca", "rw", "rm", "ss", "t"],
     ie: "UTF-8",
@@ -100,7 +101,7 @@ async function translate(text: string | string[], opts?: Options) {
     ssel: 0,
     tsel: 0,
     kc: 7,
-    q: text,
+    q: _text,
     tk: TOKEN,
   };
 
@@ -109,21 +110,17 @@ async function translate(text: string | string[], opts?: Options) {
     "Accept-Encoding": "gzip",
   };
 
-  try {
-    const res = await axios({
-      adapter,
-      url: URL,
-      params: PARAMS,
-      headers: HEADERS,
-      timeout: 3 * 1000,
-      paramsSerializer: (params) => {
-        return qs.stringify(params, { arrayFormat: "repeat" });
-      },
-    });
-    return getResult(res);
-  } catch (error) {
-    throw error;
-  }
+  const res = await axios({
+    adapter,
+    url: URL,
+    params: PARAMS,
+    headers: HEADERS,
+    timeout: 3 * 1000,
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: "repeat" });
+    },
+  });
+  return getResult(res);
 }
 
 function getResult(res: any): Result {

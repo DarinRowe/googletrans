@@ -10,7 +10,8 @@
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "coveralls": "coveralls < coverage/lcov.info",
-    "version": "yarn version"
+    "commit": "npx git-cz",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,8 @@
     "translator",
     "translate",
     "node",
-    "promise"
+    "google translator",
+    "googlet ranslate"
   ],
   "author": "Darin Lo",
   "license": "MIT",
@@ -42,8 +44,13 @@
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.4",
     "@types/qs": "^6.9.2",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "coveralls": "^3.1.0",
+    "eslint": "^7.0.0",
+    "eslint-config-alloy": "^3.7.1",
     "jest": "^25.5.4",
+    "prettier": "^2.0.5",
     "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
   }
