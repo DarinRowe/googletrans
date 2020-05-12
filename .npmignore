@@ -10,7 +10,7 @@ yarn.lock
 .coveralls.yml
 .eslint.js
 jestconfig.json
-googleToken.d.ts
-languages.d.ts
-userAgents.d.ts
-utils.d.ts
+/lib/googleToken.js
+/lib/languages.d.ts
+/lib/userAgents.d.ts
+/lib/utils.d.ts

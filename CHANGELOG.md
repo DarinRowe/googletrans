@@ -1,12 +1,19 @@
 # Changelog
 
+### 1.0.0 (May 12, 2020)
+
+- [Style] Add eslint;
+- [Fix] The text is over the maximum character limit;
+- [Test] COVERAGE:95.34% => 95.96%；
+- [CI] Remove yarn;
+
 ### 0.2.3 (May 8, 2020)
 
 - [Feature] Support "zh-hk" & "Filipino" & "zh-sg" language.
 - [Feature] Supplement README.md.
 - [Refactor] Remove useagents.json. Significantly reduce the package size, MINIFIED size:79.8kB => 32.8kB, MINIFIED + GZIPPED:16.7kB => 11.4kB.
 - [Meta] Add stale.yml
-- [Testing] Add Unicode > 2048 && 2048 > Unicode > 128 test. COVERAGE:94.44% => 95.34%
+- [Test] Add Unicode > 2048 && 2048 > Unicode > 128 test. COVERAGE:94.44% => 95.34%
 - [CI] Add release.yml, to release and pulish to npmjs
 - [Meta] Add dist lib folder to .gitignore
 
