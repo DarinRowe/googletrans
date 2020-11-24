@@ -1,4 +1,9 @@
-# Changelog
+## [1.0.1](https://github.com/DarinRowe/googletrans/compare/v1.0.0...v1.0.1) (2020-11-24)
+
+
+### Bug Fixes
+
+* upgrade axios from 0.19.2 to 0.21.0 ([58702c3](https://github.com/DarinRowe/googletrans/commit/58702c34578266736caa0aa11385ee5f10f6c6ee))
 
 ### 1.0.0 (May 12, 2020)
 
