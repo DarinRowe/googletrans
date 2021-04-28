@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.17
+    - 14.14.22
+  - dependency-name: qs
+    versions:
+    - 6.9.6
+  - dependency-name: webpack-cli
+    versions:
+    - 4.3.1
+    - 4.4.0
+  - dependency-name: webpack
+    versions:
+    - 5.11.1
+    - 5.19.0
+  - dependency-name: "@types/jest"
+    versions:
+    - 26.0.19
+    - 26.0.20
+  - dependency-name: eslint-config-alloy
+    versions:
+    - 3.10.0
