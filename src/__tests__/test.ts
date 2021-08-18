@@ -152,11 +152,11 @@ describe("translate Methods Test", () => {
         ["yellow", "green", "", "", "blue", ""],
         "zh"
       );
-      expect(res.text).toBe("黄色\n绿色\n\n\n蓝色");
+      expect(res.text).toBe("黄色\n绿色\n\n\n蓝色的");
       expect(res.textArray).toContainEqual("");
       expect(res.textArray).toContainEqual("黄色");
       expect(res.textArray).toContainEqual("绿色");
-      expect(res.textArray).toContainEqual("蓝色");
+      expect(res.textArray).toContainEqual("蓝色的");
     } catch (error) {
       console.log(error);
     }
