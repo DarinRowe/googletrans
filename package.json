@@ -37,8 +37,8 @@
   },
   "homepage": "https://github.com/DarinRowe/googletrans#readme",
   "dependencies": {
-    "axios": ">=0.21.1",
-    "qs": "^6.10.3"
+    "axios": ">=0.25.0",
+    "qs": "^6.9.3"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
