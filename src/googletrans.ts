@@ -25,7 +25,7 @@ interface Result {
 /**
  * Translation
  * @param text - The text to be translated.
- * @param options - The  translation options. If the param is string, mean the language you want to translate into. If the param is object，can set more options.
+ * @param options - The translation options. If the param is string, mean the language you want to translate into. If the param is object，can set more options.
  */
 function googletrans(text: string | string[], options?: string | Options) {
   let a: any;

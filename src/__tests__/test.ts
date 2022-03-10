@@ -17,12 +17,12 @@ describe("translate Methods Test", () => {
     });
   });
 
-  test("translate some misspelled English text to German ", () => {
-    return googletrans("I spea Dutch", { from: "en", to: "de" }).then((res) => {
-      expect(res.text).toBe("ich spreche Niederländisch");
+  test("translate some misspelled English text to Dutch", () => {
+    return googletrans("I spea English", "nl").then((res) => {
+      expect(res.text).toBe("ik spreek Engels");
       expect(res.src).toBe("en");
       expect(res.hasCorrectedText).toBe(true);
-      expect(res.correctedText).toBe("I [speak] Dutch");
+      expect(res.correctedText).toBe("I [speak] English");
     });
   });
 
@@ -99,9 +99,9 @@ describe("translate Methods Test", () => {
   test("batch translation through array without empty string.", async () => {
     try {
       const res = await googletrans(["blue", "green", "yellow"], "nl");
-      expect(res.text).toBe("blauw\ngroen\ngeel");
+      expect(res.text).toBe("blauw\ngroente\ngeel");
       expect(res.textArray).toContainEqual("blauw");
-      expect(res.textArray).toContainEqual("groen");
+      expect(res.textArray).toContainEqual("groente");
       expect(res.textArray).toContainEqual("geel");
     } catch (error) {
       console.log(error);
@@ -110,8 +110,8 @@ describe("translate Methods Test", () => {
   test("batch translation through an element of array.", async () => {
     try {
       const res = await googletrans(["green"], "nl");
-      expect(res.text).toBe("groen");
-      expect(res.textArray).toContain("groen");
+      expect(res.text).toBe("groente");
+      expect(res.textArray).toContain("groente");
       expect(res.textArray).not.toContain("geel");
       expect(res.textArray).not.toContain("blauw");
     } catch (error) {
@@ -149,14 +149,14 @@ describe("translate Methods Test", () => {
   test("batch translation by an array with an empty string.", async () => {
     try {
       const res = await googletrans(
-        ["yellow", "green", "", "", "blue", ""],
+        ["apple", "potato", "", "", "tomato", ""],
         "zh"
       );
-      expect(res.text).toBe("黄色\n绿色\n\n\n蓝色的");
+      expect(res.text).toBe("苹果\n土豆\n\n\n番茄");
       expect(res.textArray).toContainEqual("");
-      expect(res.textArray).toContainEqual("黄色");
-      expect(res.textArray).toContainEqual("绿色");
-      expect(res.textArray).toContainEqual("蓝色的");
+      expect(res.textArray).toContainEqual("苹果");
+      expect(res.textArray).toContainEqual("土豆");
+      expect(res.textArray).toContainEqual("番茄");
     } catch (error) {
       console.log(error);
     }
