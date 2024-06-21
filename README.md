@@ -261,4 +261,4 @@ DISCLAIMER: this is an unofficial library using the web API of Google Translate 
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2020-present, Darin Lo
+Copyright (c) 2020-present, DarinLo
