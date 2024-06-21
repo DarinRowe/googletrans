@@ -10,8 +10,8 @@ const resposeTest4 = require("./resposeTest4.json");
 
 describe("translate Methods Test", () => {
   test("translate without any options", () => {
-    return googletrans("vue").then((res) => {
-      expect(res.src).toBe("fr");
+    return googletrans("hola").then((res) => {
+      expect(res.src).toBe("es");
       expect(res.hasCorrectedLang).toBe(false);
       expect(res.hasCorrectedText).toBe(false);
     });
@@ -134,7 +134,7 @@ describe("translate Methods Test", () => {
       expect(res.text).toBe("");
       expect(res.textArray).toContainEqual("");
     } catch (error) {
-      expect(error.message).toMatch(/empty/);
+      expect((error as Error).message).toMatch(/empty/);
     }
   });
   test("translation through an empty string.", async () => {
@@ -143,15 +143,12 @@ describe("translate Methods Test", () => {
       expect(res.text).toBe("");
       expect(res.textArray).toContainEqual("");
     } catch (error) {
-      expect(error.message).toMatch(/empty/);
+      expect((error as Error).message).toMatch(/empty/);
     }
   });
   test("batch translation by an array with an empty string.", async () => {
     try {
-      const res = await googletrans(
-        ["apple", "potato", "", "", "tomato", ""],
-        "zh"
-      );
+      const res = await googletrans(["apple", "potato", "", "", "tomato", ""], "zh");
       expect(res.text).toBe("苹果\n土豆\n\n\n番茄");
       expect(res.textArray).toContainEqual("");
       expect(res.textArray).toContainEqual("苹果");
@@ -165,7 +162,7 @@ describe("translate Methods Test", () => {
     try {
       const res = await googletrans(["", "Hello"], "nl");
     } catch (error) {
-      expect(error.message).toMatch(/empty/);
+      expect((error as Error).message).toMatch(/empty/);
     }
   });
   test("The text is over the maximum character limit ( 15k )", () => {
@@ -178,8 +175,8 @@ describe("translate Methods Test", () => {
     return googletrans(str, "fr")
       .then((res) => {})
       .catch((error) => {
-        console.log(error.message);
-        expect(error.message).toMatch(/maximum/);
+        console.log((error as Error).message);
+        expect((error as Error).message).toMatch(/maximum/);
       });
   });
 });

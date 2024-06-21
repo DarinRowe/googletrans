@@ -33,7 +33,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm ci
       - run: npm test
-      # - run: npm run coveralls
 
   # release job
   release:

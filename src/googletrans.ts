@@ -1,6 +1,6 @@
 import qs from "qs";
 import axios from "axios";
-import adapter from "axios/lib/adapters/http";
+// import adapter from "axios/lib/adapters/http";
 import { isSupported, getCode } from "./languages";
 import { getToken } from "./googleToken";
 import { getUserAgent } from "./utils";
@@ -59,9 +59,7 @@ async function translate(text: string | string[], opts?: Options) {
     for (let i = 0; i < _text.length; i++) {
       const t = _text[i];
       if (t.length === 0 && i === 0) {
-        const e = new Error(
-          "The first element of the text array is an empty string."
-        );
+        const e = new Error("The first element of the text array is an empty string.");
         throw e;
       } else {
         str += t + "\n";
@@ -111,7 +109,7 @@ async function translate(text: string | string[], opts?: Options) {
   };
 
   const res = await axios({
-    adapter,
+    // adapter,
     url: URL,
     params: PARAMS,
     headers: HEADERS,

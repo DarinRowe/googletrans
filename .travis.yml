@@ -4,8 +4,6 @@ node_js:
 email:
   on_failure: change
   on_success: never
-after_success:
-  - npm run coveralls
 cache:
   directories:
     - node_modules
