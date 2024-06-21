@@ -2,9 +2,9 @@
 
 > Free and Unlimited Google translate API for node.js
 
+[![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 [![install size](https://badgen.net/bundlephobia/minzip/googletrans)](https://bundlephobia.com/result?p=googletrans)
 [![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://github.com/DarinRowe/googletrans/blob/master/LICENSE.md)
-[![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 
 <!-- https://badgen.net/packagephobia/publish/googletrans -->
 
