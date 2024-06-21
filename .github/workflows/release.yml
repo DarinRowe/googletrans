@@ -32,7 +32,6 @@ jobs:
       - name: Build js
         run: npm run build
       - name: Publish to NPM
-        run: npm publish --access public --no-git-checks
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
