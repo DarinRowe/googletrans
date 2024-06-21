@@ -1,5 +1,9 @@
 # This is a workflow to create github release for a tag and publish the package to npm repo
-name: release
+name: Release
+
+permissions:
+  contents: read
+
 on:
   push:
     tags:
@@ -7,9 +11,6 @@ on:
       # patterns to match for tag creation. Here all tags similar to v1.0 or
       # v1.2.0 will trigger this action
       - "v[0-9]+.[0-9]+.[0-9]+*"
-
-permissions:
-  contents: read
       
 jobs:
   release:
@@ -29,15 +30,6 @@ jobs:
       - run: npm ci
       - name: Build js
         run: npm run build
-      - uses: actions/create-release@v1
-        env:
-          # this is provided by github, you don't need to do anything here
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
       - name: Publish to NPM with latest tag
         if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
         run: npm publish --access public
