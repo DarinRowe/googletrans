@@ -1,6 +1,6 @@
 {
   "name": "googletrans",
-  "version": "1.0.4",
+  "version": "1.0.21",
   "description": "Free and Unlimited Google translate API for node.js",
   "files": [
     "lib/**/*"
