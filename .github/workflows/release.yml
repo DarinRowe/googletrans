@@ -30,13 +30,8 @@ jobs:
       - run: npm ci
       - name: Build js
         run: npm run build
-      - name: Publish to NPM with latest tag
-        if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
-        run: npm publish --access public
+      - name: Publish to NPM
+        run: npm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - name: Publish to NPM with next tag
-        if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
-        run: npm publish --access public --tag next
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true
