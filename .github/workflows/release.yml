@@ -3,6 +3,7 @@ name: release
 on:
   push:
     tags:
+      - "v*"
       # patterns to match for tag creation. Here all tags similar to v1.0 or
       # v1.2.0 will trigger this action
       - "v[0-9]+.[0-9]+.[0-9]+*"
@@ -36,42 +37,24 @@ jobs:
 
   # release job
   release:
-    needs: [setup_variables, test]
+    permissions:
+      id-token: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/create-release@v1
-        env:
-          # this is provided by github, you don't need to do anything here
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
-
-  # publish job
-  publish_to_npm:
-    needs: [setup_variables, test]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
         with:
-          node-version: "10.x"
+          node-version: lts/*
           registry-url: https://registry.npmjs.org/
-      - name: Check lock file & install
-        run: npm ci
-      - name: Build js
-        run: npm run build
-      - name: Publish with latest tag
-        if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
-        run: npm publish --access public
+      - run: npx changelogithub
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm i -g @antfu/ni
+      - run: nci
+      - run: nr ci:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - name: Publish with next tag
-        if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
-        run: npm publish --access public --tag next
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true
