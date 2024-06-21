@@ -7,12 +7,15 @@ on:
       # patterns to match for tag creation. Here all tags similar to v1.0 or
       # v1.2.0 will trigger this action
       - "v[0-9]+.[0-9]+.[0-9]+*"
+
+      
 jobs:
-  setup_variables:
     runs-on: ubuntu-latest
-    outputs:
-      isLatest: ${{ steps.release_type.outputs.latest }}
+    permissions:
+      contents: write
     steps:
+     outputs:
+      isLatest: ${{ steps.release_type.outputs.latest }}
       - id: release_type
         name: Identify release type
         # For understanding how to set output read:
@@ -20,28 +23,6 @@ jobs:
         run: echo "::set-output name=latest::$LATEST"
         env:
           LATEST: ${{ contains(github.ref, '-alpha') != true && contains(github.ref, '-beta') != true && contains(github.ref, '-rc') != true }}
-
-  # test job
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["10", "12"]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-      - run: npm ci
-      - run: npm test
-
-  # release job
-  release:
-    permissions:
-      id-token: write
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -52,9 +33,25 @@ jobs:
       - run: npx changelogithub
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - run: npm i -g @antfu/ni
-      - run: nci
-      - run: nr ci:publish
+      - run: npm ci
+      - name: Build js
+        run: npm run build
+      - uses: actions/create-release@v1
+        env:
+          # this is provided by github, you don't need to do anything here
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+      - name: Publish to NPM with latest tag
+        if: ${{ needs.setup_variables.outputs.isLatest == 'true' }}
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
+      - name: Publish to NPM with next tag
+        if: ${{ needs.setup_variables.outputs.isLatest != 'true' }}
+        run: npm publish --access public --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
