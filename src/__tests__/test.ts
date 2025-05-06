@@ -19,7 +19,7 @@ describe("translate Methods Test", () => {
 
   test("translate some misspelled English text to Dutch", () => {
     return googletrans("I spea English", "nl").then((res) => {
-      expect(res.text).toBe("ik spreek Engels");
+      expect(res.text).toBe("Ik spreek Engels");
       expect(res.src).toBe("en");
       expect(res.hasCorrectedText).toBe(true);
       expect(res.correctedText).toBe("I [speak] English");
