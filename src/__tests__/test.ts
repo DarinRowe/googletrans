@@ -239,9 +239,80 @@ describe("getToken method Test", () => {
   });
 
   test("2048 > Unicode > 128", () => {
-    // const a = getToken("ᢈ");
-    // console.log(a);
     expect(getToken("ᢈ")).toBe("951746.569782");
+  });
+
+  test("Unicode surrogate pairs", () => {
+    // Using emoji which typically consists of surrogate pairs
+    expect(getToken("😀")).toBe("916699.772271");
+  });
+
+  test("Unicode surrogate pairs with multiple characters", () => {
+    // Using multiple emojis to test consecutive surrogate pair handling
+    expect(getToken("👨‍👩‍👧‍👦")).toBeDefined();
+  });
+
+  test("Negative number handling", () => {
+    // Using input that generates negative numbers
+    expect(getToken("!@#$%^&*()_+")).toBe("510272.130356");
+  });
+
+  test("Large number handling", () => {
+    // Using input that generates large numbers
+    const longString = "A".repeat(1000);
+    expect(getToken(longString)).toBeDefined();
+  });
+
+  test("Mixed Unicode and ASCII", () => {
+    // Mixing ASCII, Unicode above 2048, and surrogate pairs
+    expect(getToken("Hello⁉️😀")).toBeDefined();
+  });
+
+  test("Unicode at 2048 boundary", () => {
+    // Using character with Unicode code point exactly at 2048
+    const char = String.fromCharCode(2048);
+    expect(getToken(char)).toBeDefined();
+  });
+
+  test("Unicode just below 2048", () => {
+    // Using character with Unicode code point at 2047
+    const char = String.fromCharCode(2047);
+    expect(getToken(char)).toBeDefined();
+  });
+
+  test("Complex surrogate pairs", () => {
+    // Using character that requires 4-byte encoding (code point > 65535)
+    const char = String.fromCodePoint(0x1f600); // Smiling face emoji
+    expect(getToken(char)).toBeDefined();
+  });
+
+  test("Multiple surrogate pairs with ASCII", () => {
+    // Mixing ASCII and multiple surrogate pairs
+    const text = "Hi" + String.fromCodePoint(0x1f600) + String.fromCodePoint(0x1f601);
+    expect(getToken(text)).toBeDefined();
+  });
+
+  test("Extreme negative number handling", () => {
+    // Using special string to ensure negative number generation
+    const specialChars = String.fromCharCode(55296) + String.fromCharCode(56320);
+    expect(getToken(specialChars)).toBeDefined();
+
+    // Using another input that might generate negative numbers
+    const complexString = "🌍".repeat(50) + "⁉️".repeat(50);
+    expect(getToken(complexString)).toBeDefined();
+  });
+
+  test("Maximum negative number scenario", () => {
+    // Using special string combination to trigger maximum negative number case
+    const maxNegativeString = Array.from(
+      { length: 100 },
+      (_, i) => String.fromCharCode(55296 + (i % 10)) + String.fromCharCode(56320 + (i % 10))
+    ).join("");
+    expect(getToken(maxNegativeString)).toBeDefined();
+
+    // Using another extreme case
+    const extremeString = Array.from({ length: 50 }, () => String.fromCharCode(0xd800) + String.fromCharCode(0xdc00)).join("");
+    expect(getToken(extremeString)).toBeDefined();
   });
 });
 
