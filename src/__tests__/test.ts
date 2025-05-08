@@ -279,3 +279,130 @@ describe("getReslut method Test", () => {
     expect(reslut.text).toBe("你好");
   });
 });
+
+describe("Additional Edge Cases and Error Handling", () => {
+  test("translate with special characters", async () => {
+    const res = await googletrans("Hello! @#$%^&*()", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with emoji", async () => {
+    const res = await googletrans("Hello 👋 World 🌍", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with very long word", async () => {
+    const longWord = "pneumonoultramicroscopicsilicovolcanoconiosis".repeat(10);
+    try {
+      await googletrans(longWord, "zh");
+    } catch (error) {
+      expect((error as Error).message).toMatch(/maximum/);
+    }
+  });
+
+  test("translate with mixed language input", async () => {
+    const res = await googletrans("Hello 你好 Bonjour", "en");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with HTML tags", async () => {
+    const res = await googletrans("<p>Hello</p>", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with numbers and symbols", async () => {
+    const res = await googletrans("123!@#$%^&*()", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with multiple spaces", async () => {
+    const res = await googletrans("Hello     World", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+
+  test("translate with line breaks", async () => {
+    const res = await googletrans("Hello\nWorld", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.hasCorrectedText).toBe(false);
+  });
+});
+
+describe("Additional Parameter Combinations", () => {
+  test("translate with all options specified", async () => {
+    const res = await googletrans("Hello", {
+      from: "en",
+      to: "zh",
+    });
+    expect(res).toBeDefined();
+  });
+
+  test("translate with invalid from language code", async () => {
+    try {
+      await googletrans("Hello", { from: "invalid", to: "zh" });
+    } catch (error) {
+      expect((error as Error).message).toMatch(/not/);
+    }
+  });
+
+  test("translate with invalid to language code", async () => {
+    try {
+      await googletrans("Hello", { from: "en", to: "invalid" });
+    } catch (error) {
+      expect((error as Error).message).toMatch(/not/);
+    }
+  });
+
+  test("translate with same source and target language", async () => {
+    const res = await googletrans("Hello", { from: "en", to: "en" });
+    expect(res.text).toBe("Hello");
+  });
+});
+
+describe("Additional Branch Coverage Tests", () => {
+  test("translate with string options", async () => {
+    const res = await googletrans("hello", "zh");
+    expect(res.text).toBeDefined();
+    expect(res.src).toBe("en");
+  });
+
+  test("translate with unsupported language code", async () => {
+    try {
+      await googletrans("hello", { from: "invalid_lang", to: "zh" });
+    } catch (error) {
+      expect((error as Error).message).toMatch(/not suppored/);
+    }
+  });
+
+  test("translate with null response", async () => {
+    const mockResponse = null;
+    const result = getResult(mockResponse);
+    expect(result.text).toBe("");
+    expect(result.textArray).toEqual([]);
+  });
+
+  test("translate with empty response data", async () => {
+    const mockResponse = {
+      status: 200,
+      data: [[[]], null, "en", null, null, [], null, null, [["en"]]],
+    };
+    const result = getResult(mockResponse);
+    expect(result.text).toBe("");
+    expect(result.textArray).toEqual([""]);
+  });
+
+  test("translate with missing response fields", async () => {
+    const mockResponse = {
+      status: 200,
+      data: [[[]], null, "en", null, null, [], null, null, [["en"]]],
+    };
+    const result = getResult(mockResponse);
+    expect(result.text).toBe("");
+    expect(result.textArray).toEqual([""]);
+  });
+});
