@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 [![install size](https://badgen.net/bundlephobia/minzip/googletrans)](https://bundlephobia.com/result?p=googletrans)
 [![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://github.com/DarinRowe/googletrans/blob/master/LICENSE.md)
+[![Known Vulnerabilities  ](https://snyk.io/test/npm/googletrans/badge.svg)](https://snyk.io/test/npm/googletrans)
 
 <!-- https://badgen.net/packagephobia/publish/googletrans -->
 
