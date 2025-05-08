@@ -3,6 +3,8 @@
 > Free and Unlimited Google translate API for node.js
 
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
+[![Build status](https://img.shields.io/github/actions/workflow/status/DarinRowe/googletrans/test.yml?logo=github&style=flat-square)](https://github.com/DarinRowe/googletrans/actions/workflows/test.yml)
+[![code coverage](https://img.shields.io/coverallsCoverage/github/DarinRowe/googletrans.svg?style=flat-square)](https://coveralls.io/r/DarinRowe/googletrans)
 [![install size](https://badgen.net/bundlephobia/minzip/googletrans)](https://bundlephobia.com/result?p=googletrans)
 [![GitHub](https://img.shields.io/github/license/DarinRowe/googletrans)](https://github.com/DarinRowe/googletrans/blob/master/LICENSE.md)
 [![Known Vulnerabilities  ](https://snyk.io/test/npm/googletrans/badge.svg)](https://snyk.io/test/npm/googletrans)
@@ -32,6 +34,12 @@ Using yarn
 
 ```bash
 yarn add googletrans
+```
+
+Using pnpm
+
+```bash
+pnpm add googletrans
 ```
 
 ## CommonJS usage
