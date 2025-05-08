@@ -43,3 +43,9 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Upload coverage to Coveralls
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 'lts/*'
+        run: npm run coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
