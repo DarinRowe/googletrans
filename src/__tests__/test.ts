@@ -179,6 +179,24 @@ describe("translate Methods Test", () => {
         expect((error as Error).message).toMatch(/maximum/);
       });
   });
+
+  test("translate to an new language, Sanskrit", async () => {
+    const res = await googletrans("water", { to: "sa" });
+    expect(res.text).toBe("जलम्‌");
+    expect(res.src).toBe("en");
+  });
+
+  test("translate to an new language, Twi", async () => {
+    const res = await googletrans("hello", { to: "ak" });
+    expect(res.text).toBe("Hɛlo");
+    expect(res.src).toBe("en");
+  });
+
+  test("translate to an new language, Oromo", async () => {
+    const res = await googletrans("world", { to: "om" });
+    expect(res.text).toBe("addunyaa");
+    expect(res.src).toBe("en");
+  });
 });
 
 describe("isSupported method Test", () => {
@@ -197,6 +215,14 @@ describe("isSupported method Test", () => {
   test("not supported language by name", () => {
     expect(isSupported("JavaScript")).toBe(false);
   });
+
+  test("supported language by name, Sepedi", () => {
+    expect(isSupported("Sepedi")).toBe(true);
+  });
+
+  test("supported language by code, Turkmen", () => {
+    expect(isSupported("tk")).toBe(true);
+  });
 });
 
 describe("getCode method Test", () => {
@@ -210,6 +236,14 @@ describe("getCode method Test", () => {
 
   test("get code a supported language by name ", () => {
     expect(getCode("English")).toBe("en");
+  });
+
+  test("get code a supported language by name, Turkmen", () => {
+    expect(getCode("Turkmen")).toBe("tk");
+  });
+
+  test("get code a supported language by code, Uzbek", () => {
+    expect(getCode("uz")).toBe("uz");
   });
 
   test("get code with 'undefined' ", () => {
