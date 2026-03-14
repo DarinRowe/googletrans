@@ -3,7 +3,7 @@ import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
 import { getToken } from "../googleToken";
 import { googletrans as googletransBase, translate, getResult } from "../googletrans";
-import { createRetriableAsyncFn, expectTextVariant, testConsole } from "../test-helpers";
+import { createRetriableAsyncFn, expectTextVariant, testConsole, withNetworkRetries } from "../test-helpers";
 const resposeTest = require("./resposeTest.json");
 const resposeTest2 = require("./resposeTest2.json");
 const resposeTest3 = require("./resposeTest3.json");
@@ -540,5 +540,65 @@ describe("Security and Input Validation", () => {
     expect(result.pronunciation).toBe("hello");
     expect(result.src).toBe("en");
     expect(result.hasCorrectedLang).toBe(false);
+  });
+});
+
+describe("test-helpers", () => {
+  test("withNetworkRetries retries retryable error codes", async () => {
+    let attempts = 0;
+    const result = await withNetworkRetries(async () => {
+      attempts += 1;
+      if (attempts === 1) {
+        const error = new Error("temporary network issue") as Error & { code?: string };
+        error.code = "ECONNRESET";
+        throw error;
+      }
+      return "ok";
+    }, 2);
+
+    expect(result).toBe("ok");
+    expect(attempts).toBe(2);
+  });
+
+  test("withNetworkRetries retries retryable HTTP status codes and then fails", async () => {
+    let attempts = 0;
+    await expect(
+      withNetworkRetries(async () => {
+        attempts += 1;
+        const error = new Error("rate limited") as Error & { response?: { status?: number } };
+        error.response = { status: 429 };
+        throw error;
+      }, 2)
+    ).rejects.toThrow(/rate limited/);
+
+    expect(attempts).toBe(2);
+  });
+
+  test("withNetworkRetries does not retry non-error values", async () => {
+    let attempts = 0;
+    await expect(
+      withNetworkRetries(async () => {
+        attempts += 1;
+        throw "boom";
+      }, 3)
+    ).rejects.toBe("boom");
+
+    expect(attempts).toBe(1);
+  });
+
+  test("expectTextVariant supports a single expected value", () => {
+    expect(() => expectTextVariant("hello", "hello")).not.toThrow();
+  });
+
+  test("testConsole rethrows assertion errors", () => {
+    const error = Object.assign(new Error("assertion failed"), { matcherResult: {} });
+    expect(() => testConsole.log(error)).toThrow(/assertion failed/);
+  });
+
+  test("testConsole logs non-assertion values", () => {
+    const spy = jest.spyOn(globalThis.console, "log").mockImplementation(() => undefined);
+    testConsole.log("plain log");
+    expect(spy).toHaveBeenCalledWith("plain log");
+    spy.mockRestore();
   });
 });
