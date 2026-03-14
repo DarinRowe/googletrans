@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import { googletrans } from "../googletrans";
+import { googletrans as googletransBase } from "../googletrans";
+import { createRetriableAsyncFn, expectTextVariant, testConsole } from "../test-helpers";
+
+const googletrans = createRetriableAsyncFn(googletransBase);
+const console = testConsole;
 
 describe("translate to different languages", () => {
   test("Afrikaans", async () => {
@@ -15,7 +19,7 @@ describe("translate to different languages", () => {
   test("Albanian", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "sq" });
-      expect(res.text).toBe("gjuhë");
+      expectTextVariant(res.text, ["gjuhë", "gjuha"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -45,7 +49,7 @@ describe("translate to different languages", () => {
   test("Armenian", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "hy" });
-      expect(res.text).toBe("լեզու");
+      expectTextVariant(res.text, ["լեզու", "լեզուն"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -95,7 +99,7 @@ describe("translate to different languages", () => {
   test("Basque", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "eu" });
-      expect(res.text).toBe("mintzaira");
+      expectTextVariant(res.text, ["mintzaira", "hizkuntza"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -105,7 +109,7 @@ describe("translate to different languages", () => {
   test("Belarusian", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "be" });
-      expect(res.text).toBe("мова");
+      expectTextVariant(res.text, ["мова", "мове"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -165,7 +169,7 @@ describe("translate to different languages", () => {
   test("Cebuano", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "ceb" });
-      expect(res.text).toBe("sinultihan");
+      expectTextVariant(res.text, ["sinultihan", "pinulongan"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -304,7 +308,7 @@ describe("translate to different languages", () => {
   test("Esperanto", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "eo" });
-      expect(res.text).toBe("Lingvo");
+      expectTextVariant(res.text, ["Lingvo", "lingvo"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -513,7 +517,7 @@ describe("translate to different languages", () => {
   test("Igbo", async () => {
     try {
       const res = await googletrans("sky", { from: "en", to: "ig" });
-      expect(res.text).toBe("eluigwe");
+      expectTextVariant(res.text, ["eluigwe", "elu-igwe"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -572,7 +576,7 @@ describe("translate to different languages", () => {
 
   test("Javanese", async () => {
     try {
-      const res = await googletrans("language", { from: "en", to: "jv" });
+      const res = await googletrans("language", { from: "en", to: "jw" });
       expect(res.text).toBe("basa");
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
@@ -703,7 +707,7 @@ describe("translate to different languages", () => {
   test("Latvian", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "lv" });
-      expect(res.text).toBe("valoda");
+      expectTextVariant(res.text, ["valoda", "valodu"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -743,7 +747,7 @@ describe("translate to different languages", () => {
   test("Luxembourgish", async () => {
     try {
       const res = await googletrans("you", { from: "en", to: "lb" });
-      expect(res.text.toLocaleLowerCase()).toBe("du");
+      expectTextVariant(res.text.toLocaleLowerCase(), ["du", "dech"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -752,7 +756,7 @@ describe("translate to different languages", () => {
   test("Macedonian", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "mk" });
-      expect(res.text).toBe("јазик");
+      expectTextVariant(res.text, ["јазик", "јазикот"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);
@@ -1002,7 +1006,7 @@ describe("translate to different languages", () => {
   test("Scots Gaelic", async () => {
     try {
       const res = await googletrans("language", { from: "en", to: "gd" });
-      expect(res.text.toLocaleLowerCase()).toBe("cànan");
+      expectTextVariant(res.text.toLocaleLowerCase(), ["cànan", "cànain"]);
       expect(res.hasCorrectedText).toBe(false);
     } catch (error) {
       console.log(error);

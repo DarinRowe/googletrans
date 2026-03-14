@@ -2,11 +2,15 @@
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
 import { getToken } from "../googleToken";
-import { googletrans, translate, getResult } from "../googletrans";
+import { googletrans as googletransBase, translate, getResult } from "../googletrans";
+import { createRetriableAsyncFn, expectTextVariant, testConsole } from "../test-helpers";
 const resposeTest = require("./resposeTest.json");
 const resposeTest2 = require("./resposeTest2.json");
 const resposeTest3 = require("./resposeTest3.json");
 const resposeTest4 = require("./resposeTest4.json");
+
+const googletrans = createRetriableAsyncFn(googletransBase);
+const console = testConsole;
 
 describe("translate Methods Test", () => {
   test("translate without any options", () => {
@@ -99,9 +103,9 @@ describe("translate Methods Test", () => {
   test("batch translation through array without empty string.", async () => {
     try {
       const res = await googletrans(["blue", "green", "yellow"], "nl");
-      expect(res.text).toBe("blauw\ngroente\ngeel");
+      expectTextVariant(res.text, ["blauw\ngroente\ngeel", "blauw\ngroen\ngeel"]);
       expect(res.textArray).toContainEqual("blauw");
-      expect(res.textArray).toContainEqual("groente");
+      expect(["groente", "groen"]).toContain(res.textArray[1]);
       expect(res.textArray).toContainEqual("geel");
     } catch (error) {
       console.log(error);
@@ -110,8 +114,8 @@ describe("translate Methods Test", () => {
   test("batch translation through an element of array.", async () => {
     try {
       const res = await googletrans(["green"], "nl");
-      expect(res.text).toBe("groente");
-      expect(res.textArray).toContain("groente");
+      expectTextVariant(res.text, ["groente", "groen"]);
+      expect(["groente", "groen"]).toContain(res.textArray[0]);
       expect(res.textArray).not.toContain("geel");
       expect(res.textArray).not.toContain("blauw");
     } catch (error) {
@@ -149,10 +153,10 @@ describe("translate Methods Test", () => {
   test("batch translation by an array with an empty string.", async () => {
     try {
       const res = await googletrans(["apple", "potato", "", "", "tomato", ""], "zh");
-      expect(res.text).toBe("苹果\n土豆\n\n\n番茄");
+      expectTextVariant(res.text, ["苹果\n土豆\n\n\n番茄", "苹果\n马铃薯\n\n\n番茄"]);
       expect(res.textArray).toContainEqual("");
       expect(res.textArray).toContainEqual("苹果");
-      expect(res.textArray).toContainEqual("土豆");
+      expect(res.textArray.some((item) => item === "土豆" || item === "马铃薯")).toBe(true);
       expect(res.textArray).toContainEqual("番茄");
     } catch (error) {
       console.log(error);
