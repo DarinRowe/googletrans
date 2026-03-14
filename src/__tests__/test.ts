@@ -515,3 +515,30 @@ describe("Additional Branch Coverage Tests", () => {
     expect(result.textArray).toEqual([""]);
   });
 });
+
+describe("Security and Input Validation", () => {
+  test("translate rejects non-string language options", async () => {
+    await expect(googletrans("hello", { to: 123 as unknown as string })).rejects.toThrow(/must be a string/);
+  });
+
+  test("translate rejects unsafe tld values", async () => {
+    await expect(googletrans("hello", { tld: "com@evil.example" })).rejects.toThrow(/valid Google Translate domain suffix/);
+  });
+
+  test("getResult throws a structured error for malformed response bodies", () => {
+    expect(() => getResult({ status: 200, data: {} })).toThrow(/Unexpected response format/);
+  });
+
+  test("getResult falls back to detected source when correction fields are missing", () => {
+    const mockResponse = {
+      status: 200,
+      data: [[["hello", null, "hello"]], null, "en"],
+    };
+
+    const result = getResult(mockResponse);
+    expect(result.text).toBe("hello");
+    expect(result.pronunciation).toBe("hello");
+    expect(result.src).toBe("en");
+    expect(result.hasCorrectedLang).toBe(false);
+  });
+});

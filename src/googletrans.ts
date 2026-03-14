@@ -4,12 +4,14 @@ import axios from "axios";
 import { isSupported, getCode } from "./languages";
 import { getToken } from "./googleToken";
 import { getUserAgent } from "./utils";
+
 interface Options {
   from?: string;
   to?: string;
   tld?: string;
   client?: string;
 }
+
 interface Result {
   text: string;
   textArray: string[];
@@ -20,6 +22,45 @@ interface Result {
   correctedText: string; // correct source text
   translations: []; // multiple translations
   raw: [];
+}
+
+function getStringOption(value: unknown, field: "from" | "to") {
+  if (typeof value === "undefined") {
+    return undefined;
+  }
+
+  if (typeof value !== "string") {
+    throw new Error(`The language option "${field}" must be a string.`);
+  }
+
+  return value;
+}
+
+function getSafeTld(value: unknown) {
+  if (typeof value === "undefined") {
+    return "com";
+  }
+
+  if (typeof value !== "string") {
+    throw new Error("The option \"tld\" must be a string.");
+  }
+
+  const normalized = value.trim().toLowerCase();
+  const TLD_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$/;
+
+  if (!TLD_PATTERN.test(normalized)) {
+    throw new Error("The option \"tld\" must be a valid Google Translate domain suffix.");
+  }
+
+  return normalized;
+}
+
+function getResponseBody(res: any) {
+  if (!res || res.status !== 200 || !Array.isArray(res.data) || !Array.isArray(res.data[0])) {
+    throw new Error("Unexpected response format from Google Translate.");
+  }
+
+  return res.data;
 }
 
 /**
@@ -43,11 +84,15 @@ function googletrans(text: string | string[], options?: string | Options) {
  * @return {Promise} - Axios Promise
  */
 async function translate(text: string | string[], opts?: Options) {
-  let _opts = opts || {};
+  const _opts = { ...(opts || {}) };
   let _text = text;
   let e: Error;
-  const FROMTO = [_opts["from"], _opts["to"]];
-  FROMTO.forEach((lang) => {
+
+  const from = getStringOption(_opts.from, "from");
+  const to = getStringOption(_opts.to, "to");
+  const tld = getSafeTld(_opts.tld);
+
+  [from, to].forEach((lang) => {
     if (lang && !isSupported(lang)) {
       e = new Error(`The language 「${lang}」is not suppored!`);
       throw e;
@@ -69,21 +114,19 @@ async function translate(text: string | string[], opts?: Options) {
   }
 
   if (_text.length === 0) {
-    e = new Error(`The text to be translated is empty!`);
+    e = new Error("The text to be translated is empty!");
     throw e;
   }
   if (_text.length > 15000) {
-    e = new Error(`The text is over the maximum character limit ( 15k )!`);
+    e = new Error("The text is over the maximum character limit ( 15k )!");
     throw e;
   }
 
-  _opts.from = _opts.from || "auto";
-  _opts.to = _opts.to || "en";
-  _opts.tld = _opts.tld || "com";
+  _opts.from = getCode(from || "auto");
+  _opts.to = getCode(to || "en");
+  _opts.tld = tld;
   _opts.client = _opts.client || "t";
 
-  _opts.from = getCode(_opts.from);
-  _opts.to = getCode(_opts.to);
   const URL = "https://translate.google." + _opts.tld + "/translate_a/single";
   const TOKEN = getToken(_text);
 
@@ -122,7 +165,7 @@ async function translate(text: string | string[], opts?: Options) {
 }
 
 function getResult(res: any): Result {
-  let result: Result = {
+  const result: Result = {
     text: "",
     textArray: [],
     pronunciation: "",
@@ -135,27 +178,37 @@ function getResult(res: any): Result {
   };
 
   if (res === null) return result;
-  if (res.status === 200) result.raw = res.data;
-  const body = res.data;
-  body[0].forEach((obj: string) => {
-    if (obj[0]) {
+
+  const body = getResponseBody(res);
+  result.raw = body;
+
+  body[0].forEach((obj: any) => {
+    if (!Array.isArray(obj)) {
+      return;
+    }
+
+    if (typeof obj[0] === "string") {
       result.text += obj[0];
     }
-    if (obj[2]) {
+    if (typeof obj[2] === "string") {
       result.pronunciation += obj[2];
     }
   });
 
-  if (body[2] === body[8][0][0]) {
-    result.src = body[2];
-  } else {
-    result.hasCorrectedLang = true;
-    result.src = body[8][0][0];
+  const detectedSource = typeof body[2] === "string" ? body[2] : "";
+  const correctedSource =
+    Array.isArray(body[8]) && Array.isArray(body[8][0]) && typeof body[8][0][0] === "string"
+      ? body[8][0][0]
+      : detectedSource;
+
+  result.src = correctedSource;
+  result.hasCorrectedLang = Boolean(detectedSource && correctedSource && detectedSource !== correctedSource);
+
+  if (Array.isArray(body[1]) && Array.isArray(body[1][0]) && body[1][0][2]) {
+    result.translations = body[1][0][2];
   }
 
-  if (body[1] && body[1][0][2]) result.translations = body[1][0][2];
-
-  if (body[7] && body[7][0]) {
+  if (Array.isArray(body[7]) && typeof body[7][0] === "string") {
     let str = body[7][0];
     str = str.replace(/<b><i>/g, "[");
     str = str.replace(/<\/i><\/b>/g, "]");
