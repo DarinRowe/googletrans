@@ -516,6 +516,27 @@ describe("Additional Branch Coverage Tests", () => {
   });
 });
 
+describe("AbortController support", () => {
+  test("translate rejects when an already-aborted signal is passed", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    await expect(googletransBase("hello", { to: "zh", signal: controller.signal })).rejects.toThrow();
+  });
+
+  test("translate accepts a signal option without aborting", async () => {
+    const controller = new AbortController();
+    const res = await googletrans("hello", { to: "zh", signal: controller.signal });
+    expect(res.text).toBeDefined();
+  });
+
+  test("translate can be aborted mid-request", async () => {
+    const controller = new AbortController();
+    const promise = googletransBase("hello", { to: "zh", signal: controller.signal });
+    controller.abort();
+    await expect(promise).rejects.toThrow();
+  });
+});
+
 describe("Security and Input Validation", () => {
   test("translate rejects non-string language options", async () => {
     await expect(googletrans("hello", { to: 123 as unknown as string })).rejects.toThrow(/must be a string/);

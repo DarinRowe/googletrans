@@ -10,6 +10,7 @@ interface Options {
   to?: string;
   tld?: string;
   client?: string;
+  signal?: AbortSignal;
 }
 
 interface Result {
@@ -157,6 +158,7 @@ async function translate(text: string | string[], opts?: Options) {
     params: PARAMS,
     headers: HEADERS,
     timeout: 3 * 1000,
+    signal: _opts.signal,
     paramsSerializer: (params) => {
       return qs.stringify(params, { arrayFormat: "repeat" });
     },
