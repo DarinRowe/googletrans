@@ -132,6 +132,7 @@ tr("I spea English", "nl")
 - `from` The source language you want to translate. (Default: auto)
 - `to` The language you want to translate into.(Default: en)
 - `tld` The google translate domain name. In this case, `tld:"co.jp"`it will be uses `translate.google.co.jp`
+- `signal` An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) from an `AbortController`, allowing you to cancel the in-flight request.
 
 ```javascript
 // en => ja
@@ -143,6 +144,29 @@ tr("Hello", { from: "en", to: "ja", tld: "co.jp" })
   .catch(function (error) {
     console.log(error);
   });
+```
+
+### Cancelling a request
+
+Use the standard [`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) API to cancel an in-flight translation request at any time.
+
+```javascript
+const axios = require("axios");
+const controller = new AbortController();
+
+// Start a translation, passing the signal
+const promise = tr("Hello world", { to: "zh-CN", signal: controller.signal });
+
+// Cancel the request at any time
+controller.abort();
+
+try {
+  const result = await promise;
+} catch (err) {
+  if (axios.isCancel(err)) {
+    console.log("Request was cancelled");
+  }
+}
 ```
 
 ### Language correction
@@ -220,6 +244,8 @@ tr(text, options)
   from: "fr";
   // The google translate domain name
   tld: "co.jp";
+  // An AbortSignal to cancel the request (optional)
+  signal: controller.signal;
 }
 ```
 

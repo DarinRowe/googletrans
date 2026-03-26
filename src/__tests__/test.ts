@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+import axios from "axios";
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
 import { getToken } from "../googleToken";
@@ -540,6 +541,25 @@ describe("Security and Input Validation", () => {
     expect(result.pronunciation).toBe("hello");
     expect(result.src).toBe("en");
     expect(result.hasCorrectedLang).toBe(false);
+  });
+});
+
+describe("AbortController / signal support", () => {
+  test("aborting a request causes the promise to reject with a cancellation error", async () => {
+    const controller = new AbortController();
+    const promise = googletransBase("Hello world", { to: "zh-CN", signal: controller.signal });
+    controller.abort();
+    let caughtError: unknown;
+    try {
+      await promise;
+    } catch (err) {
+      caughtError = err;
+    }
+    expect(caughtError).toBeDefined();
+    expect(
+      caughtError instanceof Error &&
+        (caughtError.name === "CanceledError" || caughtError.name === "AbortError" || axios.isCancel(caughtError))
+    ).toBe(true);
   });
 });
 
