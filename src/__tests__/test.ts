@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import axios from "axios";
 import { getUserAgent, getRandom } from "../utils";
 import { isSupported, getCode } from "../languages";
 import { getToken } from "../googleToken";
@@ -545,21 +544,98 @@ describe("Security and Input Validation", () => {
 });
 
 describe("AbortController / signal support", () => {
+  const mockTranslateResponse = {
+    status: 200,
+    data: [[["你好", null, "ni hao"]], null, "en"],
+  };
+
+  function createCanceledError() {
+    return Object.assign(new Error("Request canceled"), {
+      name: "CanceledError",
+      code: "ERR_CANCELED",
+    });
+  }
+
+  function loadGoogletransWithAxiosMock(
+    axiosImpl: (config: { signal?: AbortSignal }) => Promise<unknown>,
+    isCancel: (error: unknown) => boolean = (error) =>
+      Boolean(error && typeof error === "object" && "code" in error && error.code === "ERR_CANCELED")
+  ) {
+    jest.resetModules();
+    const axiosMock = jest.fn(axiosImpl);
+    const mockedAxiosModule = Object.assign(axiosMock, { isCancel });
+
+    jest.doMock("axios", () => ({
+      __esModule: true,
+      default: mockedAxiosModule,
+    }));
+
+    const module = require("../googletrans") as typeof import("../googletrans");
+    return { googletransWithMock: module.googletrans, axiosMock };
+  }
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.unmock("axios");
+  });
+
+  test("translate rejects when an already-aborted signal is passed", async () => {
+    const controller = new AbortController();
+    const canceledError = createCanceledError();
+    const { googletransWithMock } = loadGoogletransWithAxiosMock(({ signal }) => {
+      if (signal?.aborted) {
+        return Promise.reject(canceledError);
+      }
+
+      return Promise.resolve(mockTranslateResponse);
+    });
+
+    controller.abort();
+
+    await expect(googletransWithMock("Hello world", { to: "zh-CN", signal: controller.signal })).rejects.toMatchObject({
+      name: "CanceledError",
+      code: "ERR_CANCELED",
+    });
+  });
+
+  test("translate accepts a signal option without aborting", async () => {
+    const controller = new AbortController();
+    const { googletransWithMock, axiosMock } = loadGoogletransWithAxiosMock(() => Promise.resolve(mockTranslateResponse));
+
+    const res = await googletransWithMock("Hello world", { to: "zh-CN", signal: controller.signal });
+
+    expect(res.text).toBeDefined();
+    expect(axiosMock).toHaveBeenCalledWith(expect.objectContaining({ signal: controller.signal }));
+  });
+
   test("aborting a request causes the promise to reject with a cancellation error", async () => {
     const controller = new AbortController();
-    const promise = googletransBase("Hello world", { to: "zh-CN", signal: controller.signal });
+    const canceledError = createCanceledError();
+    const { googletransWithMock } = loadGoogletransWithAxiosMock(
+      ({ signal }) =>
+        new Promise((_, reject) => {
+          if (signal?.aborted) {
+            reject(canceledError);
+            return;
+          }
+
+          signal?.addEventListener(
+            "abort",
+            () => {
+              reject(canceledError);
+            },
+            { once: true }
+          );
+        })
+    );
+
+    const promise = googletransWithMock("Hello world", { to: "zh-CN", signal: controller.signal });
     controller.abort();
-    let caughtError: unknown;
-    try {
-      await promise;
-    } catch (err) {
-      caughtError = err;
-    }
-    expect(caughtError).toBeDefined();
-    expect(
-      caughtError instanceof Error &&
-        (caughtError.name === "CanceledError" || caughtError.name === "AbortError" || axios.isCancel(caughtError))
-    ).toBe(true);
+
+    await expect(promise).rejects.toMatchObject({
+      name: "CanceledError",
+      code: "ERR_CANCELED",
+    });
   });
 });
 
