@@ -50,6 +50,18 @@ To gain the TypeScript typings (for intellisense / autocomplete) while using Com
 const tr = require("googletrans").default;
 ```
 
+## ESM usage
+
+Use the default export for translation and named exports for the lower-level
+helpers:
+
+```javascript
+import tr, { translate } from "googletrans";
+
+const result = await tr("hola");
+console.log(result.text);
+```
+
 ## Super simple to use
 
 ### Basic Usage
@@ -132,6 +144,7 @@ tr("I spea English", "nl")
 - `from` The source language you want to translate. (Default: auto)
 - `to` The language you want to translate into.(Default: en)
 - `tld` The google translate domain name. In this case, `tld:"co.jp"`it will be uses `translate.google.co.jp`
+- `timeout` Request timeout in milliseconds. (Default: 10000)
 - `signal` An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) from an `AbortController`, allowing you to cancel the in-flight request.
 
 ```javascript
@@ -244,6 +257,8 @@ tr(text, options)
   from: "fr";
   // The google translate domain name
   tld: "co.jp";
+  // Request timeout in milliseconds (Default: 10000)
+  timeout: 10000;
   // An AbortSignal to cancel the request (optional)
   signal: controller.signal;
 }

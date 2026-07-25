@@ -34,7 +34,7 @@ describe("googletrans", () => {
     expect(request).toEqual(
       expect.objectContaining({
         url: "https://translate.google.com/translate_a/single",
-        timeout: 3000,
+        timeout: 10000,
         headers: expect.objectContaining({
           "Accept-Encoding": "gzip",
           "User-Agent": expect.any(String),
@@ -67,10 +67,12 @@ describe("googletrans", () => {
       to: "zh-cn",
       tld: " CO.JP ",
       client: "webapp",
+      timeout: 5000,
     });
     expect(axiosMock.mock.calls[1][0]).toEqual(
       expect.objectContaining({
         url: "https://translate.google.co.jp/translate_a/single",
+        timeout: 5000,
         params: expect.objectContaining({
           client: "webapp",
           sl: "en",
@@ -220,6 +222,18 @@ describe("googletrans", () => {
       googletrans("hello", { tld: 123 as unknown as string })
     ).rejects.toThrow('The option "tld" must be a string.');
   });
+
+  test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY, "1000"])(
+    "rejects invalid timeout %p",
+    async (timeout) => {
+      await expect(
+        googletrans("hello", { timeout: timeout as unknown as number })
+      ).rejects.toThrow(
+        'The option "timeout" must be a positive finite number.'
+      );
+      expect(axiosMock).not.toHaveBeenCalled();
+    }
+  );
 
   test("forwards AbortSignal and propagates cancellation errors", async () => {
     const controller = new AbortController();
