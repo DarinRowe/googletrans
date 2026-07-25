@@ -17,24 +17,18 @@ permissions:
 jobs:
   test:
     timeout-minutes: 10
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22.x]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [22.x, 24.x]
       fail-fast: false
 
     steps:
-      - name: Set git to use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -44,9 +38,22 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test package
+        run: node scripts/test-package.js
+
+      - name: Audit production dependencies
+        if: matrix.node-version == '22.x'
+        run: npm audit --omit=dev
+
       - name: Upload coverage to Coveralls
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
-        uses: coverallsapp/github-action@v2
+        if: matrix.node-version == '22.x'
+        uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           file: coverage/lcov.info

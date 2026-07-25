@@ -3,12 +3,19 @@
   "version": "1.0.29",
   "description": "Free and Unlimited Google translate API for node.js",
   "files": [
-    "lib/**/*"
+    "lib"
   ],
   "main": "lib/googletrans.js",
+  "types": "lib/googletrans.d.ts",
+  "type": "commonjs",
   "scripts": {
-    "test": "jest --config jestconfig.json --coverage",
-    "build": "tsc && node_modules/.bin/webpack --mode production",
+    "test": "npm run test:unit",
+    "test:unit": "jest --config jestconfig.json --coverage",
+    "test:integration": "jest --config jestconfig.integration.json --runInBand",
+    "test:package": "npm run build && node scripts/test-package.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "node -e \"require('fs').rmSync('lib', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
     "commit": "npx git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
@@ -40,13 +47,12 @@
     "qs": "^6.15.3"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.20.0",
     "@types/qs": "^6.15.1",
-    "jest": "^29.7.0",
+    "acorn": "^8.17.0",
+    "jest": "^30.4.2",
     "ts-jest": "^29.4.12",
-    "typescript": "^5.9.3",
-    "webpack": "^5.109.0",
-    "webpack-cli": "^4.10.0"
+    "typescript": "^5.9.3"
   }
 }

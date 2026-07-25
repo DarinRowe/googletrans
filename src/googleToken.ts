@@ -25,7 +25,7 @@ function TL(a: string) {
   var c = b;
   for (f = 0; f < e.length; f++) (c += e[f]), (c = RL(c, $b));
   c = RL(c, Zb);
-  c ^= b1 || 0;
+  c ^= b1;
   0 > c && (c = (c & 2147483647) + 2147483648);
   c %= 1e6;
   return c.toString() + jd + (c ^ b);

@@ -2,39 +2,77 @@
 name: Release
 
 permissions:
-  id-token: write
-  contents: write
+  contents: read
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v*"
-      # patterns to match for tag creation. Here all tags similar to v1.0 or
-      # v1.2.0 will trigger this action
-      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 jobs:
-  release:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Verify tag matches package version
+        run: node -e "const expected = 'v' + require('./package.json').version; if (process.env.GITHUB_REF_NAME !== expected) { console.error('Expected tag ' + expected + ', received ' + process.env.GITHUB_REF_NAME); process.exit(1); }"
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+      - name: Build
+        run: npm run build
+      - name: Pack and test the release artifact
+        run: node scripts/test-package.js --retain
+      - uses: actions/upload-artifact@v7
+        with:
+          name: npm-package
+          path: package-artifacts/*.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: package-artifacts
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org/
-          package-manager-cache: false
-      - run: npx changelogithub
-        if: github.event_name == 'push'
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Enable npm trusted publishing
-        run: npm install --global npm@11.5.1
-      - run: npm ci
-      - name: Build js
-        run: npm run build
+        run: npm install --global npm@11.18.0
       - name: Publish to NPM
-        run: npm publish --provenance --access public
+        run: npm publish package-artifacts/*.tgz --provenance --access public
+
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Create GitHub release
+        run: npx --yes changelogithub@14.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

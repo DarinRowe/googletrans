@@ -2,10 +2,8 @@
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
-  "roots": ["<rootDir>/test/unit"],
+  "roots": ["<rootDir>/test/integration"],
   "testMatch": ["**/*.test.ts"],
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-  "collectCoverage": true,
-  "collectCoverageFrom": ["src/**/*.ts"],
-  "coveragePathIgnorePatterns": ["/node_modules"]
+  "testTimeout": 30000
 }

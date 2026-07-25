@@ -5,3 +5,4 @@ lib
 yarn.lock
 bun.lock
 dist/
+package-artifacts/
