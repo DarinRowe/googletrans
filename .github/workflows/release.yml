@@ -6,6 +6,7 @@ permissions:
   contents: write
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*"
@@ -25,13 +26,15 @@ jobs:
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org/
+          package-manager-cache: false
       - run: npx changelogithub
+        if: github.event_name == 'push'
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Enable npm trusted publishing
+        run: npm install --global npm@11.5.1
       - run: npm ci
       - name: Build js
         run: npm run build
       - name: Publish to NPM
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
