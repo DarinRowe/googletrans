@@ -1,6 +1,6 @@
 # googletrans
 
-> Free and Unlimited Google translate API for node.js
+> Free and Unlimited Google translate API for Node.js and Bun
 
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 [![Build status](https://img.shields.io/github/actions/workflow/status/DarinRowe/googletrans/test.yml?logo=github&style=flat-square)](https://github.com/DarinRowe/googletrans/actions/workflows/test.yml)
@@ -42,15 +42,13 @@ Using pnpm
 pnpm add googletrans
 ```
 
-## CommonJS usage
+Using Bun
 
-To gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
-
-```javascript
-const tr = require("googletrans").default;
+```bash
+bun add googletrans
 ```
 
-## ESM usage
+## ESM usage (recommended)
 
 Use the default export for translation and named exports for the lower-level
 helpers:
@@ -62,18 +60,26 @@ const result = await tr("hola");
 console.log(result.text);
 ```
 
+## CommonJS usage
+
+CommonJS remains supported for existing applications:
+
+```javascript
+const tr = require("googletrans").default;
+```
+
 ## Super simple to use
 
 ### Basic Usage
 
 ```javascript
-const tr = require("googletrans").default;
+import tr from "googletrans";
 
 // Promise
 tr("hola")
   .then(function (result) {
     console.log(result.text); // hello
-    console.log(result.src); // fr
+    console.log(result.src); // es
   })
   .catch(function (error) {
     console.log(error);
