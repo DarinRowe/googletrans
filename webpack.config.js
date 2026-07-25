@@ -3,6 +3,9 @@ const path = require("path");
 
 module.exports = {
   entry: "./lib/googletrans.js",
+  resolve: {
+    tsconfig: false,
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "googletrans.js",

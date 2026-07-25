@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [lts/*]
+        node-version: [22.x]
         os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: false
 
@@ -45,7 +45,7 @@ jobs:
         run: npm test
 
       - name: Upload coverage to Coveralls
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 'lts/*'
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
