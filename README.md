@@ -22,6 +22,11 @@
 - HTTP/2 support
 - Connection pooling
 
+## Requirements
+
+Node.js 16+ or Bun 1.3.14+. For production, use an actively supported Node.js
+LTS release.
+
 ## Installing
 
 Using npm

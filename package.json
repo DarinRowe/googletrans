@@ -1,7 +1,7 @@
 {
   "name": "googletrans",
   "version": "1.0.29",
-  "description": "Free and Unlimited Google translate API for node.js",
+  "description": "Free and Unlimited Google Translate API for Node.js and Bun",
   "files": [
     "lib"
   ],
@@ -9,6 +9,9 @@
   "module": "./lib/googletrans.mjs",
   "types": "./lib/googletrans.d.ts",
   "type": "commonjs",
+  "engines": {
+    "node": ">=16"
+  },
   "sideEffects": false,
   "exports": {
     ".": {
