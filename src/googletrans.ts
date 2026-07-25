@@ -10,6 +10,7 @@ interface Options {
   to?: string;
   tld?: string;
   client?: string;
+  timeout?: number;
   signal?: AbortSignal;
 }
 
@@ -56,6 +57,25 @@ function getSafeTld(value: unknown) {
   return normalized;
 }
 
+function getTimeout(value: unknown) {
+  if (typeof value === "undefined") {
+    return 10_000;
+  }
+
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    value < 1 ||
+    value > 2_147_483_647
+  ) {
+    throw new Error(
+      'The option "timeout" must be between 1 and 2147483647 milliseconds.'
+    );
+  }
+
+  return value;
+}
+
 function getResponseBody(res: any) {
   if (!res || res.status !== 200 || !Array.isArray(res.data) || !Array.isArray(res.data[0])) {
     throw new Error("Unexpected response format from Google Translate.");
@@ -92,6 +112,7 @@ async function translate(text: string | string[], opts?: Options) {
   const from = getStringOption(_opts.from, "from");
   const to = getStringOption(_opts.to, "to");
   const tld = getSafeTld(_opts.tld);
+  const timeout = getTimeout(_opts.timeout);
 
   [from, to].forEach((lang) => {
     if (lang && !isSupported(lang)) {
@@ -157,7 +178,7 @@ async function translate(text: string | string[], opts?: Options) {
     url: URL,
     params: PARAMS,
     headers: HEADERS,
-    timeout: 3 * 1000,
+    timeout,
     signal: _opts.signal,
     paramsSerializer: (params) => {
       return qs.stringify(params, { arrayFormat: "repeat" });
@@ -227,5 +248,12 @@ function getResult(res: any): Result {
   return result;
 }
 
-export default googletrans;
+const compatibleDefault = Object.assign(googletrans, {
+  default: googletrans,
+  googletrans,
+  translate,
+  getResult,
+});
+
+export default compatibleDefault;
 export { googletrans, translate, getResult };
