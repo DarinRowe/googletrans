@@ -57,3 +57,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           file: coverage/lcov.info
+
+      - name: Use Node.js 16 for consumer compatibility
+        if: matrix.node-version == '22.x'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 16.20.2
+
+      - name: Test package on Node.js 16
+        if: matrix.node-version == '22.x'
+        run: node scripts/test-package.js

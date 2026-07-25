@@ -1,5 +1,26 @@
 import { defineConfig } from "tsdown";
 
+const sharedUserAgentsPlugin = {
+  name: "shared-user-agents",
+  generateBundle(outputOptions, bundle) {
+    if (outputOptions.format !== "es") {
+      return;
+    }
+
+    const chunk = bundle["userAgents.mjs"];
+    if (chunk?.type === "chunk") {
+      chunk.code = [
+        'import commonjsModule from "./userAgents.js";',
+        "",
+        "const { userAgents } = commonjsModule;",
+        "",
+        "export { userAgents };",
+        "",
+      ].join("\n");
+    }
+  },
+};
+
 export default defineConfig({
   entry: {
     googletrans: "src/googletrans.ts",
@@ -14,6 +35,7 @@ export default defineConfig({
   target: "node16",
   dts: true,
   cjsDefault: false,
+  plugins: [sharedUserAgentsPlugin],
   outExtensions({ format }) {
     return format === "cjs"
       ? { js: ".js", dts: ".d.ts" }

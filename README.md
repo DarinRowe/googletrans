@@ -144,7 +144,7 @@ tr("I spea English", "nl")
 - `from` The source language you want to translate. (Default: auto)
 - `to` The language you want to translate into.(Default: en)
 - `tld` The google translate domain name. In this case, `tld:"co.jp"`it will be uses `translate.google.co.jp`
-- `timeout` Request timeout in milliseconds. (Default: 10000)
+- `timeout` Request timeout in milliseconds, from 1 to 2147483647. (Default: 10000)
 - `signal` An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) from an `AbortController`, allowing you to cancel the in-flight request.
 
 ```javascript
@@ -257,7 +257,7 @@ tr(text, options)
   from: "fr";
   // The google translate domain name
   tld: "co.jp";
-  // Request timeout in milliseconds (Default: 10000)
+  // Request timeout in milliseconds, from 1 to 2147483647 (Default: 10000)
   timeout: 10000;
   // An AbortSignal to cancel the request (optional)
   signal: controller.signal;

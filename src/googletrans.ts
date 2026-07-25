@@ -62,8 +62,15 @@ function getTimeout(value: unknown) {
     return 10_000;
   }
 
-  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
-    throw new Error('The option "timeout" must be a positive finite number.');
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    value < 1 ||
+    value > 2_147_483_647
+  ) {
+    throw new Error(
+      'The option "timeout" must be between 1 and 2147483647 milliseconds.'
+    );
   }
 
   return value;
@@ -241,5 +248,12 @@ function getResult(res: any): Result {
   return result;
 }
 
-export default googletrans;
+const compatibleDefault = Object.assign(googletrans, {
+  default: googletrans,
+  googletrans,
+  translate,
+  getResult,
+});
+
+export default compatibleDefault;
 export { googletrans, translate, getResult };

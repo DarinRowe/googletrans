@@ -82,6 +82,14 @@ describe("googletrans", () => {
     );
   });
 
+  test("accepts the largest timeout supported by Node.js timers", async () => {
+    await googletrans("hello", { timeout: 2_147_483_647 });
+
+    expect(axiosMock.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ timeout: 2_147_483_647 })
+    );
+  });
+
   test("joins array input for a single request and returns textArray", async () => {
     axiosMock.mockResolvedValue(batchResponse);
 
@@ -223,13 +231,21 @@ describe("googletrans", () => {
     ).rejects.toThrow('The option "tld" must be a string.');
   });
 
-  test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY, "1000"])(
+  test.each([
+    0,
+    0.5,
+    -1,
+    2_147_483_648,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+    "1000",
+  ])(
     "rejects invalid timeout %p",
     async (timeout) => {
       await expect(
         googletrans("hello", { timeout: timeout as unknown as number })
       ).rejects.toThrow(
-        'The option "timeout" must be a positive finite number.'
+        'The option "timeout" must be between 1 and 2147483647 milliseconds.'
       );
       expect(axiosMock).not.toHaveBeenCalled();
     }
