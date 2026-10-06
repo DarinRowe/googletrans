@@ -6,7 +6,7 @@ import { basicResponse, batchResponse, correctedResponse } from "../fixtures/res
 
 jest.mock("axios", () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: Object.assign(jest.fn(), { defaults: {} }),
 }));
 
 const axiosMock = axios as unknown as jest.MockedFunction<typeof axios>;
@@ -15,6 +15,8 @@ describe("googletrans", () => {
   beforeEach(() => {
     axiosMock.mockReset();
     axiosMock.mockResolvedValue(basicResponse);
+    delete axios.defaults.httpAgent;
+    delete axios.defaults.httpsAgent;
   });
 
   test("uses stable request defaults and parses the response", async () => {
@@ -82,12 +84,70 @@ describe("googletrans", () => {
     );
   });
 
+  test("shares a keep-alive agent with bounded idle sockets", async () => {
+    await googletrans("hello");
+    await googletrans("world");
+    const first = axiosMock.mock.calls[0][0] as AxiosRequestConfig;
+    const second = axiosMock.mock.calls[1][0] as AxiosRequestConfig;
+    expect(first.httpAgent).toBe(second.httpAgent);
+    expect(first.httpsAgent).toBe(second.httpsAgent);
+    for (const agent of [first.httpAgent, first.httpsAgent]) {
+      expect(agent.keepAlive).toBe(true);
+      expect(agent.maxFreeSockets).toBe(8);
+      expect(agent.maxSockets).toBe(Infinity);
+    }
+  });
+
+  test("honors a caller's Axios agent", async () => {
+    const agent = { custom: true };
+    axios.defaults.httpAgent = agent;
+    axios.defaults.httpsAgent = agent;
+    await googletrans("hello");
+    expect(axiosMock.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ httpAgent: agent, httpsAgent: agent })
+    );
+  });
+
+  test("honors explicitly disabled Axios agents", async () => {
+    axios.defaults.httpAgent = false;
+    axios.defaults.httpsAgent = false;
+    await googletrans("hello");
+    expect(axiosMock.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ httpAgent: false, httpsAgent: false })
+    );
+  });
+
+  test("keeps raw responses by default and supports opting out", async () => {
+    axiosMock.mockResolvedValue(correctedResponse);
+    const full = await googletrans("I spea English");
+    const compact = await googletrans("I spea English", { raw: false });
+
+    expect(full.raw).toBe(correctedResponse.data);
+    expect(compact.raw).toEqual([]);
+    expect({ ...compact, raw: full.raw }).toEqual(full);
+    expect(getResult(correctedResponse, { raw: false })).toEqual(compact);
+    expect(getResult(null, { raw: false }).raw).toEqual([]);
+  });
+
+  test.each([null, 0, "false"])("rejects invalid raw option %p before requesting", async (raw) => {
+    await expect(googletrans("hello", { raw: raw as unknown as boolean })).rejects.toThrow(
+      'The option "raw" must be a boolean.'
+    );
+    expect(axiosMock).not.toHaveBeenCalled();
+  });
+
   test("accepts the largest timeout supported by Node.js timers", async () => {
     await googletrans("hello", { timeout: 2_147_483_647 });
 
     expect(axiosMock.mock.calls[0][0]).toEqual(
       expect.objectContaining({ timeout: 2_147_483_647 })
     );
+  });
+
+  test("accepts frozen options without mutating them", async () => {
+    const options = Object.freeze({ from: "English", to: "Dutch", tld: " CO.JP ", raw: false });
+    await googletrans("hello", options);
+    expect(options).toEqual({ from: "English", to: "Dutch", tld: " CO.JP ", raw: false });
   });
 
   test("joins array input for a single request and returns textArray", async () => {
@@ -103,6 +163,45 @@ describe("googletrans", () => {
     expect(result.text).toBe("blauw\ngroen\n");
     expect(result.textArray).toEqual(["blauw", "groen", ""]);
   });
+
+  test("counts trailing and empty-item newlines toward the input limit", async () => {
+    await googletrans("a".repeat(15000));
+    await googletrans(["a".repeat(14999)]);
+    await googletrans(["a".repeat(14998), ""]);
+    await expect(googletrans(["a".repeat(15000)])).rejects.toThrow("maximum character limit");
+    await expect(googletrans(["a".repeat(14999), ""])).rejects.toThrow("maximum character limit");
+    expect(axiosMock).toHaveBeenCalledTimes(3);
+    expect((axiosMock.mock.calls[2][0] as AxiosRequestConfig).params.q).toHaveLength(15000);
+  });
+
+  test("rejects excessive item counts without reading the rest of the array", async () => {
+    const texts = ["hello"];
+    texts.length = 15001;
+    Object.defineProperty(texts, 1, {
+      get() { throw new Error("Array tail must not be read"); },
+    });
+    await expect(googletrans(texts)).rejects.toThrow("maximum character limit");
+    expect(axiosMock).not.toHaveBeenCalled();
+  });
+
+  test("stops reading once cumulative input length exceeds the limit", async () => {
+    const texts = ["a".repeat(15000)];
+    Object.defineProperty(texts, 1, {
+      get() { throw new Error("Array tail must not be read"); },
+    });
+    await expect(googletrans(texts)).rejects.toThrow("maximum character limit");
+    expect(axiosMock).not.toHaveBeenCalled();
+  });
+
+  test.each([null, undefined, 123, {}, ["hello", 123], new Array(2)])(
+    "rejects non-string text %p before requesting",
+    async (text) => {
+      await expect(googletrans(text as unknown as string)).rejects.toThrow(
+        "The text must be a string or an array of strings."
+      );
+      expect(axiosMock).not.toHaveBeenCalled();
+    }
+  );
 
   test("parses corrected text and alternative translations", () => {
     const result = getResult(correctedResponse);
@@ -185,6 +284,7 @@ describe("googletrans", () => {
 
   test.each([
     ["empty text", "", "The text to be translated is empty!"],
+    ["empty array", [], "The text to be translated is empty!"],
     [
       "empty first array element",
       ["", "hello"],
@@ -203,6 +303,8 @@ describe("googletrans", () => {
   test.each([
     [{ from: "unknown", to: "en" }, "unknown"],
     [{ from: "en", to: "unknown" }, "unknown"],
+    [{ to: "constructor" }, "constructor"],
+    [{ from: "__proto__" }, "__proto__"],
   ])("rejects unsupported language options", async (options, language) => {
     await expect(googletrans("hello", options)).rejects.toThrow(
       `The language 「${language}」is not suppored!`

@@ -163,7 +163,7 @@ describe("languages", () => {
     expect(getCode(name)).toBe(code);
   });
 
-  test.each(["", "JavaScript", "undefined", "null"])(
+  test.each(["", "JavaScript", "undefined", "null", "constructor", "__proto__", "hasOwnProperty", "toString"])(
     "rejects unsupported language %j",
     (language) => {
       expect(isSupported(language)).toBe(false);

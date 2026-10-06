@@ -19,8 +19,7 @@
 - Batch translation
 - Auto language detection
 - Spelling correction
-- HTTP/2 support
-- Connection pooling
+- HTTP/1.1 connection reuse with bounded idle connections
 
 ## Requirements
 
@@ -157,6 +156,7 @@ tr("I spea English", "nl")
 - `tld` The google translate domain name. In this case, `tld:"co.jp"`it will be uses `translate.google.co.jp`
 - `timeout` Request timeout in milliseconds, from 1 to 2147483647. (Default: 10000)
 - `signal` An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) from an `AbortController`, allowing you to cancel the in-flight request.
+- `raw` Include the original response in the result. Set to `false` to return `raw: []` and reduce retained memory. (Default: true)
 
 ```javascript
 // en => ja
@@ -207,6 +207,43 @@ tr("Hero", { from: "pt", to: "nl" })
     console.log(err);
   });
 ```
+
+### Memory and concurrency
+
+When keeping translation results, use `raw: false` if you do not need the original
+response. All other result fields stay available. The response is still downloaded
+and parsed; this option reduces memory retained after the request finishes.
+
+```javascript
+const result = await tr("Bonjour", { to: "en", raw: false });
+console.log(result.text);
+```
+
+Use array input to combine small texts into one request. For larger jobs, limit
+the number of active calls instead of starting every request at once:
+
+```javascript
+const texts = ["Bonjour", "Hola", "Hallo"];
+let next = 0;
+
+await Promise.all(
+  Array.from({ length: Math.min(8, texts.length) }, async () => {
+    while (next < texts.length) {
+      const text = texts[next++];
+      const result = await tr(text, { to: "en", raw: false });
+      // Process results as they finish, without accumulating them in memory.
+      console.log(result.text);
+    }
+  })
+);
+```
+
+For direct requests, the default HTTP and HTTPS agents reuse connections on all
+supported Node.js versions and keep at most eight idle sockets per origin per
+agent. Active requests are not capped by the library. Agents supplied through
+`axios.defaults.httpAgent` or `axios.defaults.httpsAgent` take precedence, including
+`false` to disable pooling. CONNECT proxies use Axios's proxy transport, which may
+create a new tunnel for each request.
 
 ## Languages support
 
@@ -272,6 +309,8 @@ tr(text, options)
   timeout: 10000;
   // An AbortSignal to cancel the request (optional)
   signal: controller.signal;
+  // Include the original response (Default: true)
+  raw: false;
 }
 ```
 
@@ -305,7 +344,7 @@ Result {
   // multiple translations
   translations: [];
 
-  // the raw response from Google Translate servers.
+  // the raw response from Google Translate servers, or [] when raw: false.
   raw: [];
 }
 ```
@@ -315,6 +354,8 @@ Result {
 DISCLAIMER: this is an unofficial library using the web API of Google Translate and also is not associated with Google.
 
 - **The maximum character limit on a single text is 15k.**
+- The limit uses JavaScript string length and includes the newline appended after
+  each item in array input. Oversized batches are rejected before concatenation.
 - Due to limitations of the web version of google translate, this API does not guarantee that the library would work properly at all times (so please use this library if you don't care about stability).
 - If you want to use a stable API, I highly recommend you to use [Google's official translate API](https://cloud.google.com/translate/docs).
 
