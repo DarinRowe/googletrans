@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Pack and test the release artifact
-        run: node scripts/test-package.js --retain
+        run: node scripts/test-package.js --retain --live
       - uses: actions/upload-artifact@v7
         with:
           name: npm-package

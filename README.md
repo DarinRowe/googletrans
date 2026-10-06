@@ -1,6 +1,6 @@
 # googletrans
 
-> Free and Unlimited Google translate API for node.js
+> Free and Unlimited Google translate API for Node.js and Bun
 
 [![npm](https://img.shields.io/npm/v/googletrans)](https://www.npmjs.com/package/googletrans)
 [![Build status](https://img.shields.io/github/actions/workflow/status/DarinRowe/googletrans/test.yml?logo=github&style=flat-square)](https://github.com/DarinRowe/googletrans/actions/workflows/test.yml)
@@ -22,6 +22,11 @@
 - HTTP/2 support
 - Connection pooling
 
+## Requirements
+
+Node.js 16+ or Bun 1.3.14+. For production, use an actively supported Node.js
+LTS release.
+
 ## Installing
 
 Using npm
@@ -42,9 +47,27 @@ Using pnpm
 pnpm add googletrans
 ```
 
+Using Bun
+
+```bash
+bun add googletrans
+```
+
+## ESM usage (recommended)
+
+Use the default export for translation and named exports for the lower-level
+helpers:
+
+```javascript
+import tr, { translate } from "googletrans";
+
+const result = await tr("hola");
+console.log(result.text);
+```
+
 ## CommonJS usage
 
-To gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
+CommonJS remains supported for existing applications:
 
 ```javascript
 const tr = require("googletrans").default;
@@ -55,13 +78,13 @@ const tr = require("googletrans").default;
 ### Basic Usage
 
 ```javascript
-const tr = require("googletrans").default;
+import tr from "googletrans";
 
 // Promise
 tr("hola")
   .then(function (result) {
     console.log(result.text); // hello
-    console.log(result.src); // fr
+    console.log(result.src); // es
   })
   .catch(function (error) {
     console.log(error);
@@ -132,6 +155,7 @@ tr("I spea English", "nl")
 - `from` The source language you want to translate. (Default: auto)
 - `to` The language you want to translate into.(Default: en)
 - `tld` The google translate domain name. In this case, `tld:"co.jp"`it will be uses `translate.google.co.jp`
+- `timeout` Request timeout in milliseconds, from 1 to 2147483647. (Default: 10000)
 - `signal` An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) from an `AbortController`, allowing you to cancel the in-flight request.
 
 ```javascript
@@ -244,6 +268,8 @@ tr(text, options)
   from: "fr";
   // The google translate domain name
   tld: "co.jp";
+  // Request timeout in milliseconds, from 1 to 2147483647 (Default: 10000)
+  timeout: 10000;
   // An AbortSignal to cancel the request (optional)
   signal: controller.signal;
 }
