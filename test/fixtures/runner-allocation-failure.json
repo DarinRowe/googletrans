@@ -1,0 +1,34 @@
+{
+  "run": {
+    "id": 37366054230,
+    "name": "Integration",
+    "path": ".github/workflows/integration.yml",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_attempt": 1,
+    "head_branch": "master",
+    "head_repository": { "full_name": "DarinRowe/googletrans" }
+  },
+  "jobs": [
+    {
+      "id": 111951379040,
+      "status": "completed",
+      "conclusion": "cancelled",
+      "runner_id": 0,
+      "runner_name": "",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/DarinRowe/googletrans/check-runs/111951379040"
+    }
+  ],
+  "annotations": [
+    {
+      "annotation_level": "failure",
+      "message": "The job was not acquired by Runner of type hosted even after multiple attempts"
+    },
+    {
+      "annotation_level": "notice",
+      "message": "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026."
+    }
+  ]
+}
