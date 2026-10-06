@@ -153,7 +153,7 @@ function getCode(desiredLang: string) {
   const unSupported = "UNSUPPORTED";
   const lowerLanguage = desiredLang.toLowerCase();
 
-  if (typeof langs[lowerLanguage] !== "undefined") {
+  if (Object.prototype.hasOwnProperty.call(langs, lowerLanguage)) {
     return lowerLanguage;
   }
 

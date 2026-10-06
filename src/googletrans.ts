@@ -1,7 +1,8 @@
 import qs from "qs";
 import axios from "axios";
-// import adapter from "axios/lib/adapters/http";
-import { isSupported, getCode } from "./languages";
+import { Agent as HttpAgent } from "http";
+import { Agent as HttpsAgent } from "https";
+import { getCode } from "./languages";
 import { getToken } from "./googleToken";
 import { getUserAgent } from "./utils";
 
@@ -12,7 +13,15 @@ interface Options {
   client?: string;
   timeout?: number;
   signal?: AbortSignal;
+  raw?: boolean;
 }
+
+const MAX_TEXT_LENGTH = 15_000;
+const TEXT_LIMIT_ERROR = "The text is over the maximum character limit ( 15k )!";
+// Bound idle connections without throttling active requests.
+const agentOptions = { keepAlive: true, maxFreeSockets: 8, timeout: 10_000 };
+const httpAgent = new HttpAgent(agentOptions);
+const httpsAgent = new HttpsAgent(agentOptions);
 
 interface Result {
   text: string;
@@ -26,15 +35,58 @@ interface Result {
   raw: [];
 }
 
-function getStringOption(value: unknown, field: "from" | "to") {
-  if (typeof value === "undefined") {
-    return undefined;
-  }
-
-  if (typeof value !== "string") {
+function getLanguageOption(value: unknown, field: "from" | "to") {
+  if (typeof value !== "undefined" && typeof value !== "string") {
     throw new Error(`The language option "${field}" must be a string.`);
   }
 
+  const language = value || (field === "from" ? "auto" : "en");
+  const code = getCode(language);
+  if (code === "UNSUPPORTED") {
+    throw new Error(`The language 「${language}」is not suppored!`);
+  }
+  return code;
+}
+
+function getText(text: string | string[]) {
+  if (Array.isArray(text) && text.length > 0) {
+    if (text[0] === "") {
+      throw new Error("The first element of the text array is an empty string.");
+    }
+    // Every array item contributes at least one newline.
+    if (text.length > MAX_TEXT_LENGTH) {
+      throw new Error(TEXT_LIMIT_ERROR);
+    }
+    let length = 0;
+    for (const item of text) {
+      if (typeof item !== "string") {
+        throw new Error("The text must be a string or an array of strings.");
+      }
+      length += item.length + 1;
+      if (length > MAX_TEXT_LENGTH) {
+        throw new Error(TEXT_LIMIT_ERROR);
+      }
+    }
+    return text.join("\n") + "\n";
+  }
+
+  if (Array.isArray(text) || text === "") {
+    throw new Error("The text to be translated is empty!");
+  }
+  if (typeof text !== "string") {
+    throw new Error("The text must be a string or an array of strings.");
+  }
+  if (text.length > MAX_TEXT_LENGTH) {
+    throw new Error(TEXT_LIMIT_ERROR);
+  }
+  return text;
+}
+
+function getRawOption(value: unknown) {
+  if (typeof value === "undefined") return true;
+  if (typeof value !== "boolean") {
+    throw new Error('The option "raw" must be a boolean.');
+  }
   return value;
 }
 
@@ -90,13 +142,7 @@ function getResponseBody(res: any) {
  * @param options - The translation options. If the param is string, mean the language you want to translate into. If the param is object，can set more options.
  */
 function googletrans(text: string | string[], options?: string | Options) {
-  let a: any;
-  if (typeof options === "string") {
-    a = { to: options };
-  } else {
-    a = options;
-  }
-  return translate(text, a);
+  return translate(text, typeof options === "string" ? { to: options } : options);
 }
 
 /**
@@ -105,57 +151,22 @@ function googletrans(text: string | string[], options?: string | Options) {
  * @return {Promise} - Axios Promise
  */
 async function translate(text: string | string[], opts?: Options) {
-  const _opts = { ...(opts || {}) };
-  let _text = text;
-  let e: Error;
+  const _opts = opts || {};
 
-  const from = getStringOption(_opts.from, "from");
-  const to = getStringOption(_opts.to, "to");
+  const from = getLanguageOption(_opts.from, "from");
+  const to = getLanguageOption(_opts.to, "to");
   const tld = getSafeTld(_opts.tld);
   const timeout = getTimeout(_opts.timeout);
+  const raw = getRawOption(_opts.raw);
+  const _text = getText(text);
 
-  [from, to].forEach((lang) => {
-    if (lang && !isSupported(lang)) {
-      e = new Error(`The language 「${lang}」is not suppored!`);
-      throw e;
-    }
-  });
-
-  if (Array.isArray(_text)) {
-    let str = "";
-    for (let i = 0; i < _text.length; i++) {
-      const t = _text[i];
-      if (t.length === 0 && i === 0) {
-        const e = new Error("The first element of the text array is an empty string.");
-        throw e;
-      } else {
-        str += t + "\n";
-      }
-    }
-    _text = str;
-  }
-
-  if (_text.length === 0) {
-    e = new Error("The text to be translated is empty!");
-    throw e;
-  }
-  if (_text.length > 15000) {
-    e = new Error("The text is over the maximum character limit ( 15k )!");
-    throw e;
-  }
-
-  _opts.from = getCode(from || "auto");
-  _opts.to = getCode(to || "en");
-  _opts.tld = tld;
-  _opts.client = _opts.client || "t";
-
-  const URL = "https://translate.google." + _opts.tld + "/translate_a/single";
+  const URL = "https://translate.google." + tld + "/translate_a/single";
   const TOKEN = getToken(_text);
 
   const PARAMS = {
-    client: _opts.client,
-    sl: _opts.from,
-    tl: _opts.to,
+    client: _opts.client || "t",
+    sl: from,
+    tl: to,
     hl: "en",
     dt: ["at", "bd", "ex", "ld", "md", "qca", "rw", "rm", "ss", "t"],
     ie: "UTF-8",
@@ -174,20 +185,22 @@ async function translate(text: string | string[], opts?: Options) {
   };
 
   const res = await axios({
-    // adapter,
     url: URL,
     params: PARAMS,
     headers: HEADERS,
     timeout,
     signal: _opts.signal,
+    httpAgent: axios.defaults.httpAgent ?? httpAgent,
+    httpsAgent: axios.defaults.httpsAgent ?? httpsAgent,
     paramsSerializer: (params) => {
       return qs.stringify(params, { arrayFormat: "repeat" });
     },
   });
-  return getResult(res);
+  return getResult(res, { raw });
 }
 
-function getResult(res: any): Result {
+function getResult(res: any, options: Pick<Options, "raw"> = {}): Result {
+  const raw = getRawOption(options.raw);
   const result: Result = {
     text: "",
     textArray: [],
@@ -203,7 +216,7 @@ function getResult(res: any): Result {
   if (res === null) return result;
 
   const body = getResponseBody(res);
-  result.raw = body;
+  if (raw) result.raw = body;
 
   body[0].forEach((obj: any) => {
     if (!Array.isArray(obj)) {
