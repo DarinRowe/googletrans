@@ -1,0 +1,33 @@
+name: Retry Runner allocation
+
+on:
+  workflow_run:
+    workflows: [Integration, Test]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: write
+  checks: read
+
+concurrency:
+  group: retry-runner-allocation-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  retry:
+    if: github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # workflow_run uses the default branch SHA, never the triggering PR's code.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Retry only a confirmed hosted Runner allocation failure
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const retry = require('./scripts/retry-runner-allocation.js');
+            await retry({ github, context, core });
